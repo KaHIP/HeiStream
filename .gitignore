@@ -1,0 +1,7 @@
+*.swp
+tmppartition*
+deploy
+tags
+build
+out
+compileDEBUG.sh
