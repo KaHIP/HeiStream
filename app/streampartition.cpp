@@ -39,7 +39,6 @@ void config_multibfs_initial_partitioning(PartitionConfig & partition_config);
 int main(int argn, char **argv) {
         PartitionConfig partition_config;
         std::string graph_filename;
-	LINE_BUFFER lines = NULL;
         timer t, processing_t, io_t;
 	EdgeWeight total_edge_cut = 0;
         double global_mapping_time = 0;
@@ -47,6 +46,7 @@ int main(int argn, char **argv) {
 	double buffer_io_time = 0;
         quality_metrics qm;
 	balance_configuration bc;
+	std::vector<std::vector<LongNodeID>>* input = NULL;
 
         bool is_graph_weighted = false;
         bool suppress_output   = false;
@@ -78,68 +78,41 @@ int main(int argn, char **argv) {
 	int &passes = partition_config.num_streams_passes;
 	for (partition_config.restream_number=0; partition_config.restream_number<passes; partition_config.restream_number++) {
 
+		// ***************************** IO operations ***************************************       
 		io_t.restart();
 		graph_io_stream::readFirstLineStream(partition_config, graph_filename, total_edge_cut);
-		graph_io_stream::loadRemainingLines(partition_config, lines);
+		graph_io_stream::loadRemainingLinesToBinary(partition_config, input);
 		buffer_io_time += io_t.elapsed();
 
 		while (partition_config.remaining_stream_nodes) {
+			// ***************************** IO operations ***************************************       
 			io_t.restart();
-			int streamed_nodes = graph_io_stream::readStreamBuffer(partition_config, *G, lines);
-			G->set_partition_count(partition_config.k); 
+			partition_config.nmbNodes = MIN(partition_config.stream_buffer_len, partition_config.remaining_stream_nodes);
+			graph_io_stream::loadBufferLinesToBinary(partition_config, input, partition_config.nmbNodes);
 			buffer_io_time += io_t.elapsed();
 
-			if (streamed_nodes == 0) {
-				break;
-			}
+			t.restart();
 
+			// ***************************** build model ***************************************       
+			G->set_partition_count(partition_config.k); 
+			graph_io_stream::createModel (partition_config, *G, input);
 			buffer_mapping_time = 0;
 			graph_io_stream::countAssignedNodes(partition_config);
 			graph_io_stream::prescribeBufferInbalance(partition_config);
-
 			bool already_fully_partitioned = (partition_config.restream_vcycle && partition_config.restream_number) ;
 			bc.configurate_balance( partition_config, *G, already_fully_partitioned || !partition_config.stream_initial_bisections);
 			config_multibfs_initial_partitioning(partition_config);
 
 
 			// ***************************** perform partitioning ***************************************       
-			t.restart();
 			graph_partitioner partitioner;
-
-
-
-			if(partition_config.time_limit == 0) {
-				partitioner.perform_partitioning(partition_config, *G);
-			} else {
-				PartitionID* map = new PartitionID[G->number_of_nodes()];
-				EdgeWeight best_cut = std::numeric_limits<EdgeWeight>::max();
-				while(t.elapsed() < partition_config.time_limit) {
-					partition_config.graph_allready_partitioned = false;
-					partitioner.perform_partitioning(partition_config, *G);
-					EdgeWeight cut = qm.edge_cut(*G);
-					if(cut < best_cut) {
-						best_cut = cut;
-						forall_nodes((*G), node) {
-							map[node] = G->getPartitionIndex(node);
-						} endfor
-					}
-				}
-
-				forall_nodes((*G), node) {
-					G->setPartitionIndex(node, map[node]);
-				} endfor
-				delete[] map;
-			}
-
-
+			partitioner.perform_partitioning(partition_config, *G);
 			ofs.close();
-			
-			buffer_mapping_time += t.elapsed();
 
-			io_t.restart();
+			// ***************************** permanent assignment ***************************************       
 			graph_io_stream::generalizeStreamPartition(partition_config, *G);
-			buffer_io_time += io_t.elapsed();
-			global_mapping_time += buffer_mapping_time;
+
+			global_mapping_time += t.elapsed();
 
 			 
 			// write batch partition to the disc 
@@ -159,7 +132,8 @@ int main(int argn, char **argv) {
 		}
 
 		if (partition_config.ram_stream) {
-			delete lines;
+			/* delete lines; */
+			delete input;
 		}
         }
 

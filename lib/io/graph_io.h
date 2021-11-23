@@ -35,9 +35,6 @@ class graph_io {
                 int writeGraph_HMetisFormat(graph_access & G, const std::string & filename);
 
                 static
-		int readStreamBuffer_old(PartitionConfig & config, graph_access & G, const int buffer_size, std::vector<std::string>& lines);
-                
-                static
                 int readGraphWeighted(graph_access & G, const std::string & filename);
 
                 static

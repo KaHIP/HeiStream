@@ -35,8 +35,8 @@ class graph_io_stream {
                 virtual ~graph_io_stream () ;
 
                 static
-		int readStreamBuffer(PartitionConfig & config, graph_access & G, LINE_BUFFER &lines);
-                
+		NodeID createModel (PartitionConfig & config, graph_access & G, std::vector<std::vector<LongNodeID>>* &input);
+
                 static
 		void processNodeWeight(PartitionConfig & config, std::vector<NodeWeight>& all_nodes, NodeID node, NodeWeight weight);
 
@@ -124,6 +124,15 @@ class graph_io_stream {
                 static
 		void streamEvaluatePartition(PartitionConfig & config, const std::string & filename, EdgeWeight& edgeCut);
 
+                static
+		void loadRemainingLinesToBinary(PartitionConfig & partition_config, std::vector<std::vector<LongNodeID>>* &input);
+
+                static
+		void loadBufferLinesToBinary(PartitionConfig & partition_config, std::vector<std::vector<LongNodeID>>* &input, LongNodeID num_lines);
+
+                static
+		std::vector<std::vector<LongNodeID>>* loadLinesFromStreamToBinary(PartitionConfig & partition_config, LongNodeID num_lines);
+
 		template< typename T>
                 static
 		T return_and_delete_element(std::vector<T> & vec, LongNodeID pos);
@@ -132,6 +141,38 @@ class graph_io_stream {
 //		int readEdgeStream_writeMetisBuffered(const std::string & graph_filename, std::string filename_output, bool relabel_nodes);
 
 };
+
+inline void graph_io_stream::loadRemainingLinesToBinary(PartitionConfig & partition_config, std::vector<std::vector<LongNodeID>>* &input) {
+	if (partition_config.ram_stream) {                                                                    
+		input = graph_io_stream::loadLinesFromStreamToBinary(partition_config, partition_config.remaining_stream_nodes);
+	}                                                                                                     
+}                                                                                                             
+
+inline void graph_io_stream::loadBufferLinesToBinary(PartitionConfig & partition_config, std::vector<std::vector<LongNodeID>>* &input, LongNodeID num_lines) {
+	if (!partition_config.ram_stream) {                                                                   
+		input = graph_io_stream::loadLinesFromStreamToBinary(partition_config, num_lines);            
+	}                                                                                                     
+}                                                                                                             
+
+inline std::vector<std::vector<LongNodeID>>* graph_io_stream::loadLinesFromStreamToBinary(PartitionConfig & partition_config, LongNodeID num_lines) {
+	std::vector<std::vector<LongNodeID>>* input;                                                          
+	input = new std::vector<std::vector<LongNodeID>>(num_lines);                                                                                          
+	std::vector<std::string>* lines;                                                                      
+	lines = new std::vector<std::string>(1);                                                              
+	LongNodeID node_counter = 0;                                                                          
+	buffered_input *ss2 = NULL;                                                                           
+	while( node_counter < num_lines) {                                                                    
+		std::getline(*(partition_config.stream_in),(*lines)[0]);                                      
+		if ((*lines)[0][0] == '%') { // a comment in the file                                         
+			continue;                                                                             
+		}                                                                                             
+		ss2 = new buffered_input(lines);                                                              
+		ss2->simple_scan_line((*input)[node_counter++]);                                              
+		(*lines)[0].clear(); delete ss2;                                                              
+	}                                                                                                     
+	delete lines;                                                                                         
+	return input;                                                                                         
+}                                                                                                             
 
 
 
