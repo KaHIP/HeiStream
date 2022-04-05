@@ -535,6 +535,7 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
         partition_config.use_fennel_edgecut_objectives	   = false;
 	partition_config.xxx				   = 4;
 	partition_config.double_non_ghost_edges		   = true;
+	partition_config.edge_block_nodes		   = NULL;
 
         partition_config.t1				   = new double[1];
         partition_config.t2				   = new double[1];

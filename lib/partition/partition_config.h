@@ -477,6 +477,7 @@ struct PartitionConfig
         std::vector<NodeWeight>* stream_blocks_weight;
         LongNodeID nmbNodes;
         std::vector<std::vector<EdgeWeight>> *degree_nodeBlock;
+	std::vector<std::vector<NodeID>> *edge_block_nodes;
 	int one_pass_algorithm;
         LongNodeID stream_total_upperbound;
         double fennel_gamma;
