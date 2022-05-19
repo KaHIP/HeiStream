@@ -74,7 +74,7 @@ NodeID graph_io_stream::createModel (PartitionConfig & config, graph_access & G,
 	}                                                                                                     
 
 	/* config.degree_nodeBlock = new std::vector<std::vector<EdgeWeight>> (config.nmbNodes, std::vector<EdgeWeight>(config.k,0)); */
-	config.edge_block_nodes = new std::vector<std::vector<NodeID>> (config.nmbNodes, std::vector<NodeID>());
+	config.edge_block_nodes = new std::vector<std::vector<NodeID>> (config.k, std::vector<NodeID>());
 
 	setupForGhostNeighbors(config);                                                                       
 
