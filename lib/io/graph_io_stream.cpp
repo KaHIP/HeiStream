@@ -74,7 +74,9 @@ NodeID graph_io_stream::createModel (PartitionConfig & config, graph_access & G,
 	}                                                                                                     
 
 	/* config.degree_nodeBlock = new std::vector<std::vector<EdgeWeight>> (config.nmbNodes, std::vector<EdgeWeight>(config.k,0)); */
-	config.edge_block_nodes = new std::vector<std::vector<NodeID>> (config.k, std::vector<NodeID>());
+	/* config.edge_block_nodes = new std::vector<std::vector<NodeID>> (config.k, std::vector<NodeID>()); */
+	config.edge_block_nodes = new std::vector<std::vector<std::pair<NodeID,NodeWeight>>> (
+							config.k, std::vector<std::pair<NodeID,NodeWeight>>());
 
 	setupForGhostNeighbors(config);                                                                       
 
@@ -169,27 +171,42 @@ void graph_io_stream::insertQuotientNodesInBatch(PartitionConfig & config, std::
 /* 	} */ 
 /* 	return inserted_edges; */
 /* } */
+/* EdgeID graph_io_stream::insertQuotientEdgesInBatch(PartitionConfig & config, std::vector<std::vector<std::pair<NodeID,EdgeWeight>>>& all_edges, NodeID uncontracted_ghost_nodes) { */
+/* 	EdgeID inserted_edges = 0; */
+/* 	NodeID prev_node; */
+/* 	EdgeWeight edge_weight; */
+/* 	for (PartitionID block=0; block < config.k; block++) { */ 
+/* 		NodeID target = config.nmbNodes + uncontracted_ghost_nodes + block; */
+/* 		if ((*config.edge_block_nodes)[block].size() >= 1) { */
+/* 			prev_node = (*config.edge_block_nodes)[block][0]; */
+/* 			edge_weight = 0; */
+/* 		} else continue; // if block has no neighbors in batch, continue outer for loop */
+/* 		for (auto& node : (*config.edge_block_nodes)[block]) { */
+/* 			if (node == prev_node) { */
+/* 				edge_weight++; */
+/* 			} else { */
+/* 				inserted_edges += includeEdgeInBatch(all_edges, prev_node, target, (1+config.double_non_ghost_edges)*edge_weight); */
+/* 				prev_node = node; */
+/* 				edge_weight = 1; */
+/* 			} */
+/* 		} */
+/* 		// necessary because last neighbor of each block is not directly included inside the inner for loop */
+/* 		inserted_edges += includeEdgeInBatch(all_edges, prev_node, target, (1+config.double_non_ghost_edges)*edge_weight); */
+/* 	} */ 
+/* 	return inserted_edges; */
+/* } */
 EdgeID graph_io_stream::insertQuotientEdgesInBatch(PartitionConfig & config, std::vector<std::vector<std::pair<NodeID,EdgeWeight>>>& all_edges, NodeID uncontracted_ghost_nodes) {
 	EdgeID inserted_edges = 0;
-	NodeID prev_node;
 	EdgeWeight edge_weight;
 	for (PartitionID block=0; block < config.k; block++) { 
 		NodeID target = config.nmbNodes + uncontracted_ghost_nodes + block;
-		if ((*config.edge_block_nodes)[block].size() >= 1) {
-			prev_node = (*config.edge_block_nodes)[block][0];
-			edge_weight = 0;
-		} else continue; // if block has no neighbors in batch, continue outer for loop
-		for (auto& node : (*config.edge_block_nodes)[block]) {
-			if (node == prev_node) {
-				edge_weight++;
-			} else {
-				inserted_edges += includeEdgeInBatch(all_edges, prev_node, target, (1+config.double_non_ghost_edges)*edge_weight);
-				prev_node = node;
-				edge_weight = 1;
-			}
+		if ((*config.edge_block_nodes)[block].size() < 1) continue; // if block has no neighbors in batch, continue outer for loop
+		for (auto& element : (*config.edge_block_nodes)[block]) {
+			inserted_edges += includeEdgeInBatch(all_edges, 
+							     element.first, 
+							     target, 
+							     (1+config.double_non_ghost_edges)*element.second);
 		}
-		// necessary because last neighbor of each block is not directly included inside the inner for loop
-		inserted_edges += includeEdgeInBatch(all_edges, prev_node, target, (1+config.double_non_ghost_edges)*edge_weight);
 	} 
 	return inserted_edges;
 }
@@ -289,6 +306,18 @@ void graph_io_stream::processGhostNeighborInBatch(PartitionConfig & config, Node
 /* 	} */
 /* 	(*config.degree_nodeBlock)[node][targetGlobalPar] += edge_weight; */
 /* } */
+/* void graph_io_stream::processQuotientEdgeInBatch(PartitionConfig & config, NodeID node, LongNodeID global_target, EdgeWeight edge_weight) { */
+/* 	PartitionID targetGlobalPar = (*config.stream_nodes_assign)[global_target-1]; */
+/* 	if ( targetGlobalPar == config.k ) { // SIGNAL: neighbor not yet assigned */
+/* 		processGhostNeighborInBatch(config, node, global_target, edge_weight); */ 
+/* 		return; */	
+/* 	} */
+/* 	if ( targetGlobalPar > config.k ) { */
+/* 		std::cerr << "ERROR regarding number of parts.\n"; */
+/* 		exit(0); */
+/* 	} */
+/* 	for (EdgeWeight i=0; i<edge_weight; i++) (*config.edge_block_nodes)[targetGlobalPar].push_back(node); */
+/* } */
 void graph_io_stream::processQuotientEdgeInBatch(PartitionConfig & config, NodeID node, LongNodeID global_target, EdgeWeight edge_weight) {
 	PartitionID targetGlobalPar = (*config.stream_nodes_assign)[global_target-1];
 	if ( targetGlobalPar == config.k ) { // SIGNAL: neighbor not yet assigned
@@ -299,7 +328,15 @@ void graph_io_stream::processQuotientEdgeInBatch(PartitionConfig & config, NodeI
 		std::cerr << "ERROR regarding number of parts.\n";
 		exit(0);
 	}
-	for (EdgeWeight i=0; i<edge_weight; i++) (*config.edge_block_nodes)[targetGlobalPar].push_back(node);
+	if ((*config.edge_block_nodes)[targetGlobalPar].size() >= 1) {
+		auto& curr_element = (*config.edge_block_nodes)[targetGlobalPar][0];
+		if (curr_element.first == node) {
+			curr_element.second += edge_weight;
+			return;
+		}
+	}
+	std::pair<NodeID,NodeWeight> element = {node,edge_weight};
+	(*config.edge_block_nodes)[targetGlobalPar].push_back(element);
 }
 
 
