@@ -266,6 +266,7 @@ int parse_parameters(int argn, char **argv,
 		stream_output_progress,
 		stream_allow_ghostnodes,
 		num_streams_passes,
+		balance_edges,
 #elif defined MODE_SPMXV_MULTILEVELMAPPING
                 k, imbalance,  
                 preconfiguration, 

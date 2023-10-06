@@ -629,12 +629,16 @@ void graph_io_stream::readFirstLineStream(PartitionConfig & partition_config, st
 	partition_config.total_stream_nodecounter = 0;
 	partition_config.stream_n_nodes = partition_config.remaining_stream_nodes;
 
+	auto total_weight = (partition_config.balance_edges) ? 
+		(partition_config.remaining_stream_nodes+2*partition_config.remaining_stream_edges) : 
+		partition_config.remaining_stream_nodes;
+
 	if (partition_config.num_streams_passes > 1 + partition_config.restream_number) {
 		partition_config.stream_total_upperbound = ceil(((100+1.5*partition_config.imbalance)/100.)*
-					(partition_config.remaining_stream_nodes/(double)partition_config.k));
+					(total_weight/(double)partition_config.k));
 	} else {
 		partition_config.stream_total_upperbound = ceil(((100+partition_config.imbalance)/100.)*
-					(partition_config.remaining_stream_nodes/(double)partition_config.k));
+					(total_weight/(double)partition_config.k));
 	}
 
 	partition_config.fennel_alpha = partition_config.remaining_stream_edges * 
