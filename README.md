@@ -1,4 +1,6 @@
 # HeiStream 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/315a384a931d4136a89a4b2846ae0475)](https://app.codacy.com/gh/KaHIP/HeiStream/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 HeiStream is a buffered streaming algorithm to heuristically solve the graph partitioning problem: dividing the nodes of a graph into k disjoint blocks of roughly the same size while minimizing the number of edges running between blocks.
 HeiStream is a first attempt to close a gap observed in the space of available partitioning algorithms. 
