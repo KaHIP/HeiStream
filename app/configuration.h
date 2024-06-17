@@ -561,7 +561,7 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
     partition_config.light_evaluator = false;
     partition_config.convert_direct = false;
     partition_config.async_mode = false;
-    partition_config.use_queue = true;
+    partition_config.use_queue = false;
     partition_config.last_edge_count = 0;
     partition_config.back_node_count = 0;
     partition_config.forward_node_count = 0;

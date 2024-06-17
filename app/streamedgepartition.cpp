@@ -25,11 +25,8 @@
 #include "quality_metrics.h"
 #include "random_functions.h"
 #include "timer.h"
-//#include "GraphInfo_generated.h"
-//#include "FlatBufferWriter.h"
+#include "tools/flat_buffer_writer.h"
 #include <sys/resource.h>
-
-//using namespace GraphInfo;
 
 #define MIN(A, B) ((A) < (B)) ? (A) : (B)
 #define MAX(A, B) ((A) > (B)) ? (A) : (B)
@@ -88,8 +85,8 @@ int main(int argn, char **argv) {
     auto *G = new graph_access();
     partition_config.global_cycle_iterations = partition_config.reps;
     partition_config.edge_partition = true;
+    partition_config.use_queue = true;
     partition_config.initial_partitioning_repetitions=4;
-    //flatbuffers::FlatBufferBuilder builder(1024);
 
     int &passes = partition_config.num_streams_passes;
     for (partition_config.restream_number = 0;
@@ -150,7 +147,7 @@ int main(int argn, char **argv) {
         (*partition_config.stream_out).close();
     }
     long maxRSS = getMaxRSS();
-    //FlatBufferWriter fb_writer;
+    FlatBufferWriter fb_writer;
 
     if (!partition_config.benchmark) {
         NodeID vertexCut = 0;
@@ -172,7 +169,7 @@ int main(int argn, char **argv) {
                                                               replicas, replication_factor, balance);
         }
         std::cout << "RF: " << replication_factor << std::endl;
-        //fb_writer.updatePartitionResults(vertexCut, replicas, replication_factor, balance);
+        fb_writer.updateEdgePartitionResults(vertexCut, replicas, replication_factor, balance);
     }
 
     // write the partition to the disc
@@ -182,8 +179,8 @@ int main(int argn, char **argv) {
         graph_io_stream::writePartitionStream(partition_config);
     }
 
-    //fb_writer.updateResourceCompsumption(model_construction_time, mapping_time, partition_time, total_time, maxRSS);
-    //fb_writer.write(graph_filename, partition_config);
+    fb_writer.updateResourceConsumption(partition_config.read_graph_time,model_construction_time, mapping_time, partition_time, total_time, maxRSS);
+    fb_writer.write(graph_filename, partition_config);
 
     return 0;
 }

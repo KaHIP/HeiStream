@@ -28,6 +28,7 @@
 #include "timer.h"
 #include "partition/uncoarsening/refinement/mixed_refinement.h"
 #include "partition/uncoarsening/refinement/label_propagation_refinement/label_propagation_refinement.h"
+#include "tools/flat_buffer_writer.h"
 
 #define MIN(A, B) ((A)<(B))?(A):(B)
 #define MAX(A, B) ((A)>(B))?(A):(B)
@@ -35,15 +36,20 @@
 
 void config_multibfs_initial_partitioning(PartitionConfig &partition_config);
 
+long getMaxRSS();
+
+std::string extractBaseFilename(const std::string &fullPath);
+
 
 int main(int argn, char **argv) {
     PartitionConfig partition_config;
     std::string graph_filename;
-    timer t, processing_t, io_t;
+    timer t, processing_t, io_t, model_t;
     EdgeWeight total_edge_cut = 0;
     double global_mapping_time = 0;
     double buffer_mapping_time = 0;
     double buffer_io_time = 0;
+    double model_construction_time = 0;
     quality_metrics qm;
     balance_configuration bc;
     std::vector <std::vector<LongNodeID>> *input = NULL;
@@ -71,6 +77,7 @@ int main(int argn, char **argv) {
     random_functions::setSeed(partition_config.seed);
 
     partition_config.LogDump(stdout);
+    partition_config.graph_filename = graph_filename;
     partition_config.stream_input = true;
     graph_access *G = new graph_access();
 
@@ -97,7 +104,9 @@ int main(int argn, char **argv) {
 
             // ***************************** build model ***************************************
             G->set_partition_count(partition_config.k);
+            model_t.restart();
             graph_io_stream::createModel(partition_config, *G, input);
+            model_construction_time += model_t.elapsed();
             buffer_mapping_time = 0;
             graph_io_stream::countAssignedNodes(partition_config);
             graph_io_stream::prescribeBufferInbalance(partition_config);
@@ -141,16 +150,12 @@ int main(int argn, char **argv) {
     }
 
     double total_time = processing_t.elapsed();
-
-    std::cout << "Total processing time: " << total_time << std::endl;
-    std::cout << "io time: " << buffer_io_time << std::endl;
-    std::cout << "partitioning/mapping time in total: " << global_mapping_time << std::endl;
+    delete G;
+    long maxRSS = getMaxRSS();
+    FlatBufferWriter fb_writer;
 
     graph_io_stream::streamEvaluatePartition(partition_config, graph_filename, total_edge_cut);
-
-    std::cout << "cut \t\t" << total_edge_cut << std::endl;
-    std::cout << "finalobjective  " << total_edge_cut << std::endl;
-    std::cout << "balance \t" << qm.balance_full_stream(*partition_config.stream_blocks_weight) << std::endl;
+    fb_writer.updateVertexPartitionResults(total_edge_cut, qm.balance_full_stream(*partition_config.stream_blocks_weight));
 
     // write the partition to the disc
     std::stringstream filename;
@@ -166,11 +171,12 @@ int main(int argn, char **argv) {
         std::cout << "No partition will be written as output." << std::endl;
     }
 
-    delete G;
-
     if (partition_config.ghostkey_to_edges != NULL) {
         delete partition_config.ghostkey_to_edges;
     }
+
+    fb_writer.updateResourceConsumption(buffer_io_time, model_construction_time, global_mapping_time, global_mapping_time, total_time, maxRSS);
+    fb_writer.write(graph_filename, partition_config);
 
     return 0;
 }
@@ -182,4 +188,30 @@ void config_multibfs_initial_partitioning(PartitionConfig &partition_config) {
     }
 }
 
+long getMaxRSS() {
+    struct rusage usage;
+
+    if (getrusage(RUSAGE_SELF, &usage) == 0) {
+        // The maximum resident set size is in kilobytes
+        return usage.ru_maxrss;
+    } else {
+        std::cerr << "Error getting resource usage information." << std::endl;
+        // Return a sentinel value or handle the error in an appropriate way
+        return -1;
+    }
+}
+
+// Function to extract the base filename without path and extension
+std::string extractBaseFilename(const std::string &fullPath) {
+    size_t lastSlash = fullPath.find_last_of('/');
+    size_t lastDot = fullPath.find_last_of('.');
+
+    if (lastSlash != std::string::npos) {
+        // Found a slash, extract the substring after the last slash
+        return fullPath.substr(lastSlash + 1, lastDot - lastSlash - 1);
+    } else {
+        // No slash found, just extract the substring before the last dot
+        return fullPath.substr(0, lastDot);
+    }
+}
 

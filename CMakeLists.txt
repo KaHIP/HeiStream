@@ -83,7 +83,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/io)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/partition)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/tools)
 
-
+# link flatbuffers to log experimental output
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extern/flatbuffers
+        ${CMAKE_CURRENT_BINARY_DIR}/flatbuffers-build
+        EXCLUDE_FROM_ALL)
 
 
 
@@ -132,12 +135,12 @@ add_library(libkaffpa OBJECT ${LIBKAFFPA_SOURCE_FILES})
 # generate targets for each binary
 add_executable(heistream app/streampartition.cpp $<TARGET_OBJECTS:libkaffpa> )
 target_compile_definitions(heistream PRIVATE "-DMODE_STREAMPARTITION")
-target_link_libraries(heistream ${OpenMP_CXX_LIBRARIES})
+target_link_libraries(heistream ${OpenMP_CXX_LIBRARIES} flatbuffers)
 #target_link_libraries (streampartition /usr/lib/x86_64-linux-gnu/libtcmalloc_and_profiler.so)
 install(TARGETS heistream DESTINATION bin)
 
 add_executable(heistream_edge app/streamedgepartition.cpp $<TARGET_OBJECTS:libkaffpa> )
 target_compile_definitions(heistream_edge PRIVATE "-DMODE_STREAMPARTITION")
-target_link_libraries(heistream_edge ${OpenMP_CXX_LIBRARIES})
+target_link_libraries(heistream_edge ${OpenMP_CXX_LIBRARIES} flatbuffers)
 #target_link_libraries(heistream_edge flatbuffers)
 install(TARGETS heistream_edge DESTINATION bin)
