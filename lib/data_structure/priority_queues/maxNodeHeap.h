@@ -81,6 +81,7 @@ class maxNodeHeap : public priority_queue_interface {
                 void decreaseKey(NodeID node, Gain gain) override;
                 void increaseKey(NodeID node, Gain gain) override;
                 void changeKey(NodeID node, Gain gain) override;
+                void subtractKey(NodeID node, Gain gain);
                 Gain getKey(NodeID node) override;
 
         private:
@@ -273,6 +274,17 @@ inline void maxNodeHeap::increaseKey(NodeID node, Gain gain) {
         m_elements[queue_idx].set_key(gain);
         m_heap[heap_idx].first = gain;
         siftUp(heap_idx);
+}
+
+inline void maxNodeHeap::subtractKey(NodeID node, Gain gain) {
+    ASSERT_TRUE(m_element_index.find(node) != m_element_index.end());
+    int queue_idx = m_element_index[node];
+    int heap_idx = m_elements[queue_idx].get_index();
+    // std::cout << "Set " << m_heap[heap_idx].first << " to "
+    //           << m_heap[heap_idx].first + gain << std::endl;
+    m_elements[queue_idx].set_key(m_heap[heap_idx].first + gain);
+    m_heap[heap_idx].first = m_heap[heap_idx].first + gain;
+    siftDown(heap_idx);
 }
 
 inline Gain maxNodeHeap::getKey(NodeID node) {

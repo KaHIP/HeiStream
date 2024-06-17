@@ -13,4 +13,5 @@ cd ..
 
 mkdir deploy
 cp ./build/heistream deploy/
+cp ./build/heistream_edge deploy/
 rm -r build

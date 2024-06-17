@@ -206,6 +206,55 @@ int parse_parameters(int argn, char **argv,
         struct arg_lit *automatic_buffer_len		     = arg_lit0(NULL, "automatic_buffer_len", "Automatically choose buffer size for fastest performance. (Default: disabled)");
         struct arg_int *xxx				     = arg_int0(NULL, "xxx", NULL, "tuning factor for size of coarsest graph. Default 4.");
 
+        // Stream Edge Partition
+        struct arg_lit *benchmark =
+            arg_lit0(NULL, "benchmark",
+                     "Do not output partition IDs to benchmark time and memory consumption. (Default: disabled)");
+        struct arg_lit *convert_direct =
+                arg_lit0(NULL, "convert_direct",
+                         "Choose between direct and through split graph conversion. "
+                         "(Default: through split conversion)");
+        struct arg_lit *use_queue = arg_lit0(NULL, "use_queue",
+                                             "Use queue to update fennel or not. "
+                                             "(Default: Do not use.)");
+        struct arg_lit *dynamic_alpha =
+                arg_lit0(NULL, "dynamic_alpha",
+                         "Dynamically update fennel alpha. (Default: disabled)");
+        struct arg_lit *batch_alpha =
+                arg_lit0(NULL, "batch_alpha",
+                         "Dynamically update fennel alpha based on batch nodes and "
+                         "edges. (Default: disabled)");
+        struct arg_lit *minimal_mode =
+                arg_lit0(NULL, "minimal_mode",
+                         "Build graph model with only one latest quotient block per "
+                         "node. (Default: disabled)");
+        struct arg_lit *light_evaluator =
+                arg_lit0(NULL, "light_evaluator", "Use light evaluator for huge graphs at small k. (Default: disabled)");
+        struct arg_lit *include_weights = arg_lit0(
+                NULL, "include_weights",
+                "Choose to enable weights to quotient nodes. (Default: disabled)");
+        struct arg_int *parallel_nodes = arg_int0(
+                NULL, "parallel_nodes", NULL,
+                "Number of independent threads loading a assigning nodes. (Default: 1)");
+        struct arg_int *num_split_edges =
+                arg_int0(NULL, "num_split_edges", NULL,
+                         "Provide number of edges of entire split graph. (Default: -1)");
+        struct arg_int *past_subset_size =
+                arg_int0(NULL, "past_subset_size", NULL,
+                         "Number of random past blocks to connect to in graph model. "
+                         "(Default: -1 = All)");
+        struct arg_dbl *tau = arg_dbl0(NULL, "tau", NULL,
+                                   "Tunable factor for splitting subgraph of "
+                                   "high degree nodes. Default: 0.");
+        struct arg_dbl *reps =
+            arg_dbl0(NULL, "reps", NULL,
+                     "Number of times batches should be coarsened. (Default: 1).");
+        struct arg_int *label_propagation_iterations_refinement =
+                arg_int0(NULL, "label_propagation_iterations_refinement", NULL,
+                         "Set the number of label propagation iterations for refinement. "
+                         "Default: 5.");
+
+
 
 	// translation of graphs
         struct arg_str *graph_translation_specs		     = arg_str0(NULL, "graph_translation_specs", NULL, "Graph translation input and output formats (edgestream_metis|edgestream_metisbuffered|edgestream_metisexternal|edgestream_hmetis|metis_hmetis). (Default: edgestream_metis)");
@@ -262,11 +311,16 @@ int parse_parameters(int argn, char **argv,
                 k, imbalance,  
                 filename_output, 
                 stream_buffer,
-		ram_stream,
-		stream_output_progress,
-		stream_allow_ghostnodes,
-		num_streams_passes,
-		balance_edges,
+                ram_stream,
+                stream_output_progress,
+                stream_allow_ghostnodes,
+                num_streams_passes,
+                balance_edges,
+                benchmark,
+                light_evaluator,
+                label_propagation_iterations,
+                label_propagation_iterations_refinement,
+                xxx,
 #elif defined MODE_SPMXV_MULTILEVELMAPPING
                 k, imbalance,  
                 preconfiguration, 
@@ -1619,6 +1673,19 @@ int parse_parameters(int argn, char **argv,
                 partition_config.xxx = xxx->ival[0];
         }
 
+        // stream edge partition
+        if (benchmark->count > 0) {
+            partition_config.benchmark = true;
+        }
+
+        if (light_evaluator->count > 0) {
+            partition_config.light_evaluator = true;
+        }
+
+        if (label_propagation_iterations_refinement->count > 0) {
+            partition_config.label_iterations_refinement =
+                    label_propagation_iterations_refinement->ival[0];
+        }
 
         return 0;
 }

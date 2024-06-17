@@ -13,6 +13,7 @@
 #include <vector>
 #include <unordered_map>
 #include <list>
+#include <cstdint>
 
 #include "limits.h"
 #include "macros_assertions.h"

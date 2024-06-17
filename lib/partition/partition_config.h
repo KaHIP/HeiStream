@@ -10,7 +10,11 @@
 
 #include "definitions.h"
 #include "data_structure/buffered_map.h"
-
+#include "data_structure/graph_access.h"
+#include <map>
+#include <sparsehash/dense_hash_map>
+#include <sparsehash/dense_hash_set>
+#include <unordered_set>
 
 typedef struct {
         PartitionID block;
@@ -528,7 +532,51 @@ struct PartitionConfig
 	double* t1;
 	double* t2;
 	double* t3;
-        
+
+    //=======================================
+    //======= Stream Edge Partition ========
+    //=======================================
+    LongNodeID total_stream_edges;
+    std::ofstream *stream_out;
+    bool edge_partition;
+    bool benchmark;
+    bool dynamic_alpha;
+    bool batch_alpha;
+    bool minimal_mode;
+    bool light_evaluator;
+    bool convert_direct;
+    bool use_queue;
+    bool async_mode;
+    bool evaluate_mode;
+    bool include_weights;
+    int parallel_nodes;
+    int past_subset_size;
+    int quotient_edges_count;
+    double tau;
+    NodeID num_split_edges;
+    LongEdgeID remaining_stream_nodes_OG;
+    LongEdgeID remaining_stream_graph_nodes;
+    LongEdgeID fennel_edges;
+    LongNodeID lower_global_node_conv;
+    LongNodeID lower_global_store;
+    unsigned long long start_pos;
+    LongNodeID upper_global_node_conv;
+    NodeID incremental_edge_ID;
+    NodeID prev_batch_edge_ID;
+    NodeID last_edge_count;
+    NodeID back_node_count;
+    NodeID forward_node_count;
+    std::vector<std::vector<NodeID>> *nodes_on_edge_conv;
+    std::vector<google::dense_hash_set<PartitionID>> *blocks_on_node;
+    std::vector<NodeID> *blocks_on_node_minimal;
+    double reps;
+    double read_graph_time;
+    double finding_past_assignments_time;
+    double assign_edge_ID_time;
+    double graph_model_time;
+    double initial_partition_time;
+    double stream_output_time;
+
         //=======================================
         // Conversion of graphs between formats =
         //=======================================

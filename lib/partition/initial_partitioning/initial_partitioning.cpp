@@ -97,7 +97,7 @@ void initial_partitioning::perform_initial_partitioning(PartitionConfig & config
                 }
 
                 forall_nodes(G, n) {
-                        G.setPartitionIndex(n,best_map[n]); 
+                        G.setPartitionIndex(n,best_map[n]);
                 } endfor
 
         }
