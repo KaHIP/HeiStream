@@ -722,13 +722,15 @@ double graph_io_stream::getFennelWeight(PartitionConfig &partition_config) {
 
 void graph_io_stream::writePartitionStream(PartitionConfig &config) {
     std::ofstream f(config.filename_output.c_str());
-    std::cout << "writing partition to " << config.filename_output << " ... " << std::endl;
+    std::cout << "Partition completed." << std::endl;
+    std::cout << "Writing partition to " << config.filename_output << " ... " << std::endl;
 
     for (LongNodeID node = 0; node < config.stream_nodes_assign->size(); node++) {
         f << (*config.stream_nodes_assign)[node] << "\n";
     }
 
     f.close();
+    std::cout << "--------------------------------" << std::endl;
 }
 
 
@@ -756,6 +758,13 @@ void graph_io_stream::readFirstLineStream(PartitionConfig &partition_config, std
     ss >> partition_config.remaining_stream_nodes;
     ss >> partition_config.remaining_stream_edges;
     ss >> partition_config.remaining_stream_ew;
+
+    partition_config.total_nodes = partition_config.remaining_stream_nodes;
+    partition_config.total_edges = partition_config.remaining_stream_edges;
+
+    if (!partition_config.filename_output.compare("")) {
+        partition_config.filename_output = "tmp_output.txt";
+    }
 
     if (partition_config.stream_nodes_assign == NULL) {
         partition_config.stream_nodes_assign = new std::vector<PartitionID>(partition_config.remaining_stream_nodes,
@@ -992,13 +1001,15 @@ void graph_io_stream::readFirstLineStreamEdge(PartitionConfig &partition_config,
         partition_config.stream_out = new std::ofstream(partition_config.filename_output.c_str());
     }
 
+    partition_config.total_nodes = partition_config.remaining_stream_nodes;
+    partition_config.total_edges = partition_config.remaining_stream_edges;
+
     // storing number of nodes of input graph
     partition_config.remaining_stream_nodes_OG = partition_config.remaining_stream_nodes;
     partition_config.remaining_stream_graph_nodes = partition_config.remaining_stream_nodes;
     // setting num. nodes of input graph = num. edges as necessitated by model construction
     partition_config.remaining_stream_nodes = partition_config.remaining_stream_edges;
     partition_config.total_stream_edges = partition_config.remaining_stream_nodes;
-    std::cout << "Input has " << partition_config.remaining_stream_nodes_OG << " nodes " << " and "  << partition_config.remaining_stream_nodes << " edges" << std::endl;
 
     if (partition_config.stream_nodes_assign == NULL && !partition_config.benchmark &&
         !partition_config.stream_output_progress) {

@@ -42,6 +42,20 @@ std::string extractBaseFilename(const std::string &fullPath);
 
 
 int main(int argn, char **argv) {
+    std::cout << R"(
+██   ██ ███████ ██ ███████ ████████ ██████  ███████  █████  ███    ███
+██   ██ ██      ██ ██         ██    ██   ██ ██      ██   ██ ████  ████
+███████ █████   ██ ███████    ██    ██████  █████   ███████ ██ ████ ██
+██   ██ ██      ██      ██    ██    ██   ██ ██      ██   ██ ██  ██  ██
+██   ██ ███████ ██ ███████    ██    ██   ██ ███████ ██   ██ ██      ██
+
+
+███    ██  ██████  ██████  ███████
+████   ██ ██    ██ ██   ██ ██
+██ ██  ██ ██    ██ ██   ██ █████
+██  ██ ██ ██    ██ ██   ██ ██
+██   ████  ██████  ██████  ███████
+    )" << std::endl;
     PartitionConfig partition_config;
     std::string graph_filename;
     timer t, processing_t, io_t, model_t;

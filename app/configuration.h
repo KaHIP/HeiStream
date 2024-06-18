@@ -547,6 +547,8 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
     // Stream Edge Partition
     partition_config.remaining_stream_nodes_OG = UNDEFINED_LONGNODE;    // new
     partition_config.remaining_stream_graph_nodes = UNDEFINED_LONGNODE; // new
+    partition_config.total_nodes = UNDEFINED_LONGNODE;
+    partition_config.total_edges = UNDEFINED_LONGEDGE;
     partition_config.fennel_edges = 0;
     partition_config.lower_global_node_conv = 1;                  // new
     partition_config.upper_global_node_conv = partition_config.k; // new
@@ -561,6 +563,7 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
     partition_config.light_evaluator = false;
     partition_config.convert_direct = false;
     partition_config.async_mode = false;
+    partition_config.write_log = false;
     partition_config.use_queue = false;
     partition_config.last_edge_count = 0;
     partition_config.back_node_count = 0;

@@ -78,13 +78,13 @@ public:
         PartitionInfo::GraphMetadataBuilder metadata_builder(builder);
         auto filenameOffset = builder.CreateString(baseFilename);
         metadata_builder.add_filename(filenameOffset);
-        metadata_builder.add_num_nodes(partition_config.remaining_stream_nodes_OG);
-        metadata_builder.add_num_edges(partition_config.total_stream_edges);
+        metadata_builder.add_num_nodes(partition_config.total_nodes);
+        metadata_builder.add_num_edges(partition_config.total_edges);
         auto metadata = metadata_builder.Finish();
         builder.Finish(metadata);
         std::cout << "Graph: " << baseFilename << std::endl;
-        std::cout << "Nodes (n): " << partition_config.remaining_stream_nodes_OG << std::endl;
-        std::cout << "Edges (m): " << partition_config.total_stream_edges << std::endl;
+        std::cout << "Nodes (n): " << partition_config.total_nodes << std::endl;
+        std::cout << "Edges (m): " << partition_config.total_edges << std::endl;
 
         PartitionInfo::PartitionConfigurationBuilder config_builder(builder);
         config_builder.add_k(partition_config.k);
@@ -159,9 +159,11 @@ public:
         std::string outputFileNameStream;
         outputFileNameStream = baseFilename + "_" + std::to_string(partition_config.k) + "_" + std::to_string(partition_config.stream_buffer_len) + ".bin";
         const char* outputFileName = outputFileNameStream.c_str();
-        FILE* file = fopen(outputFileName, "wb");
-        fwrite(bufferPointer, 1, bufferSize, file);
-        fclose(file);
+        if(partition_config.write_log) {
+            FILE *file = fopen(outputFileName, "wb");
+            fwrite(bufferPointer, 1, bufferSize, file);
+            fclose(file);
+        }
     }
 };
 

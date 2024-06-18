@@ -469,6 +469,9 @@ struct PartitionConfig
         LongNodeID stream_buffer_len;
         LongNodeID remaining_stream_nodes;
         LongEdgeID remaining_stream_edges;
+        LongNodeID total_nodes;
+        LongEdgeID total_edges;
+        bool write_log;
         int remaining_stream_ew;
         LongNodeID total_stream_nodeweight;
         LongNodeID total_stream_nodecounter;
