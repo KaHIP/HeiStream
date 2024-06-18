@@ -1025,7 +1025,6 @@ void graph_io_stream::readFirstLineStreamEdge(PartitionConfig &partition_config,
 
     // when using minimal mode, store blocks incident on nodes of input graph in 1D vector
     if (partition_config.blocks_on_node_minimal == NULL && partition_config.minimal_mode) {
-        std::cout << "Minimal mode" << std::endl;
         partition_config.blocks_on_node_minimal = new std::vector<NodeID>(partition_config.remaining_stream_nodes_OG,
                                                                           -1);
     }

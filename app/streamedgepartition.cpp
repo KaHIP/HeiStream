@@ -171,7 +171,6 @@ int main(int argn, char **argv) {
             graph_io_stream::streamEvaluatePartitionEdgeBatch(partition_config, graph_filename, vertexCut,
                                                               replicas, replication_factor, balance);
         }
-        std::cout << "RF: " << replication_factor << std::endl;
         fb_writer.updateEdgePartitionResults(vertexCut, replicas, replication_factor, balance);
     }
 
