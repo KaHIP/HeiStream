@@ -12,7 +12,7 @@ if(CCACHE_PROGRAM)
 endif()
 project(KaHIP C CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) 
@@ -73,6 +73,15 @@ if(OPTIMIZED_OUTPUT)
   add_definitions("-DKAFFPAOUTPUT")
 endif()
 
+include(FetchContent)
+
+FetchContent_Declare(
+        cpi
+        GIT_REPOSITORY https://github.com/kurpicz/cpi.git
+        GIT_TAG "origin/main"
+)
+
+FetchContent_MakeAvailable(cpi)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/app)
@@ -82,19 +91,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/io)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/partition)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/tools)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/data_structure/compression_vectors)
 
 # link flatbuffers to log experimental output
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/extern/flatbuffers
         ${CMAKE_CURRENT_BINARY_DIR}/flatbuffers-build
         EXCLUDE_FROM_ALL)
 
-
-
-
-
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc")
 #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc -lpthread")
-
 
 set(LIBKAFFPA_SOURCE_FILES
   lib/data_structure/graph_hierarchy.cpp
@@ -128,19 +133,23 @@ set(LIBKAFFPA_SOURCE_FILES
   lib/partition/uncoarsening/refinement/label_propagation_refinement/label_propagation_refinement.cpp
   lib/partition/uncoarsening/refinement/refinement.cpp
   lib/partition/uncoarsening/refinement/quotient_graph_refinement/complete_boundary.cpp
-  lib/partition/uncoarsening/refinement/quotient_graph_refinement/partial_boundary.cpp
-  extern/argtable3-3.0.3/argtable3.c)
+  lib/partition/uncoarsening/refinement/quotient_graph_refinement/partial_boundary.cpp)
 add_library(libkaffpa OBJECT ${LIBKAFFPA_SOURCE_FILES})
+target_link_libraries(libkaffpa PRIVATE cpi)
+
+set(ARGTABLE_SOURCE_FILES
+        extern/argtable3-3.0.3/argtable3.c)
+add_library(argtab OBJECT ${ARGTABLE_SOURCE_FILES})
 
 # generate targets for each binary
 add_executable(heistream app/streampartition.cpp $<TARGET_OBJECTS:libkaffpa> )
 target_compile_definitions(heistream PRIVATE "-DMODE_STREAMPARTITION")
-target_link_libraries(heistream ${OpenMP_CXX_LIBRARIES} flatbuffers)
+target_link_libraries(heistream PRIVATE ${OpenMP_CXX_LIBRARIES} flatbuffers argtab cpi)
 #target_link_libraries (streampartition /usr/lib/x86_64-linux-gnu/libtcmalloc_and_profiler.so)
 install(TARGETS heistream DESTINATION bin)
 
 add_executable(heistream_edge app/streamedgepartition.cpp $<TARGET_OBJECTS:libkaffpa> )
 target_compile_definitions(heistream_edge PRIVATE "-DMODE_STREAMPARTITION")
-target_link_libraries(heistream_edge ${OpenMP_CXX_LIBRARIES} flatbuffers)
+target_link_libraries(heistream_edge PRIVATE ${OpenMP_CXX_LIBRARIES} flatbuffers argtab cpi)
 #target_link_libraries(heistream_edge flatbuffers)
 install(TARGETS heistream_edge DESTINATION bin)

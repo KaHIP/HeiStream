@@ -27,83 +27,82 @@
 
 
 class graph_io {
-        public:
-                graph_io();
-                virtual ~graph_io () ;
+public:
+    graph_io();
 
-                static
-                int writeGraph_HMetisFormat(graph_access & G, const std::string & filename);
+    virtual ~graph_io();
 
-                static
-                int readGraphWeighted(graph_access & G, const std::string & filename);
+    static
+    int writeGraph_HMetisFormat(graph_access &G, const std::string &filename);
 
-                static
-                int writeGraphWeighted(graph_access & G, const std::string & filename);
+    static
+    int readGraphWeighted(graph_access &G, const std::string &filename);
 
-                static
-                int writeGraph(graph_access & G, const std::string & filename);
+    static
+    int writeGraphWeighted(graph_access &G, const std::string &filename);
 
-                static
-		int readMatrixToGraph(PartitionConfig & config, graph_access & G, const std::string & filename);
+    static
+    int writeGraph(graph_access &G, const std::string &filename);
 
-                static
-		int readEdgeStreamToGraph(graph_access & G, const std::string & filename, bool relabel_nodes);
+    static
+    int readMatrixToGraph(PartitionConfig &config, graph_access &G, const std::string &filename);
 
-                static
-                int readPartition(graph_access& G, const std::string & filename);
+    static
+    int readEdgeStreamToGraph(graph_access &G, const std::string &filename, bool relabel_nodes);
 
-                static
-                void writePartition(graph_access& G, const std::string & filename);
+    static
+    int readPartition(graph_access &G, const std::string &filename);
 
-                static
-		void writeSpMxVPartition(PartitionConfig & config, graph_access & G, const std::string & filename);
+    static
+    void writePartition(graph_access &G, const std::string &filename);
 
-                template<typename vectortype>
-                static void writeVector(std::vector<vectortype> & vec, const std::string & filename);
+    static
+    void writeSpMxVPartition(PartitionConfig &config, graph_access &G, const std::string &filename);
 
-                template<typename vectortype>
-                static void readVector(std::vector<vectortype> & vec, const std::string & filename);
+    template<typename vectortype>
+    static void writeVector(std::vector <vectortype> &vec, const std::string &filename);
+
+    template<typename vectortype>
+    static void readVector(std::vector <vectortype> &vec, const std::string &filename);
 
 };
 
 
-
-
 template<typename vectortype>
-void graph_io::writeVector(std::vector<vectortype> & vec, const std::string & filename) {
-        std::ofstream f(filename.c_str());
-        for( unsigned i = 0; i < vec.size(); ++i) {
-                f << vec[i] <<  std::endl;
-        }
+void graph_io::writeVector(std::vector <vectortype> &vec, const std::string &filename) {
+    std::ofstream f(filename.c_str());
+    for (unsigned i = 0; i < vec.size(); ++i) {
+        f << vec[i] << std::endl;
+    }
 
-        f.close();
+    f.close();
 }
 
 template<typename vectortype>
-void graph_io::readVector(std::vector<vectortype> & vec, const std::string & filename) {
+void graph_io::readVector(std::vector <vectortype> &vec, const std::string &filename) {
 
-        std::string line;
+    std::string line;
 
-        // open file for reading
-        std::ifstream in(filename.c_str());
-        if (!in) {
-                std::cerr << "Error opening vectorfile" << filename << std::endl;
-                return;
+    // open file for reading
+    std::ifstream in(filename.c_str());
+    if (!in) {
+        std::cerr << "Error opening vectorfile" << filename << std::endl;
+        return;
+    }
+
+    unsigned pos = 0;
+    std::getline(in, line);
+    while (!in.eof()) {
+        if (line[0] == '%') { //Comment
+            continue;
         }
 
-        unsigned pos = 0;
+        vectortype value = (vectortype) atof(line.c_str());
+        vec[pos++] = value;
         std::getline(in, line);
-        while( !in.eof() ) {
-                if (line[0] == '%') { //Comment
-                        continue;
-                }
+    }
 
-                vectortype value = (vectortype) atof(line.c_str());
-                vec[pos++] = value;
-                std::getline(in, line);
-        }
-
-        in.close();
+    in.close();
 }
 
 #endif /*GRAPHIO_H_*/

@@ -33,6 +33,10 @@
 #include "data_structure/buffered_map.h"
 #include <sparsehash/dense_hash_map>
 #include <sparsehash/dense_hash_set>
+#include "cpi/run_length_compression.hpp"
+#include "data_structure/compression_vectors/CompressionDataStructure.h"
+#include "data_structure/compression_vectors/RunLengthCompressionVector.h"
+#include "data_structure/compression_vectors/BatchRunLengthCompression.h"
 
 typedef std::vector <std::string> *LINE_BUFFER;
 
@@ -43,14 +47,14 @@ public:
     virtual ~graph_io_stream();
 
     static
-    NodeID createModel(PartitionConfig &config, graph_access &G, std::vector <std::vector<LongNodeID>> *&input);
+    NodeID createModel(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments, graph_access &G, std::vector <std::vector<LongNodeID>> *&input);
 
     static
     void
-    processNodeWeight(PartitionConfig &config, std::vector <NodeWeight> &all_nodes, NodeID node, NodeWeight weight);
+    processNodeWeight(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments, std::vector <NodeWeight> &all_nodes, NodeID node, NodeWeight weight);
 
     static
-    void generalizeStreamPartition(PartitionConfig &config, graph_access &G_local);
+    void generalizeStreamPartition(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments, graph_access &G_local);
 
     static
     void countAssignedNodes(PartitionConfig &config);
@@ -67,7 +71,7 @@ public:
     double getFennelWeight(PartitionConfig &partition_config);
 
     static
-    void writePartitionStream(PartitionConfig &config);
+    void writePartitionStream(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments);
 
     static
     void readFirstLineStream(PartitionConfig &partition_config, std::string graph_filename, EdgeWeight &total_edge_cut);
@@ -104,7 +108,7 @@ public:
 
     static
     void
-    processQuotientEdgeInBatch(PartitionConfig &config, NodeID node, LongNodeID global_target, EdgeWeight edge_weight);
+    processQuotientEdgeInBatch(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments, NodeID node, LongNodeID global_target, EdgeWeight edge_weight);
 
     static
     EdgeID insertRegularEdgeInBatch(PartitionConfig &config, std::vector <std::vector<std::pair < NodeID, EdgeWeight>>
@@ -166,7 +170,7 @@ public:
     void prescribeBufferInbalance(PartitionConfig &partition_config);
 
     static
-    void streamEvaluatePartition(PartitionConfig &config, const std::string &filename, EdgeWeight &edgeCut);
+    void streamEvaluatePartition(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments, const std::string &filename, EdgeWeight &edgeCut);
 
     static
     void loadRemainingLinesToBinary(PartitionConfig &partition_config, std::vector <std::vector<LongNodeID>> *&input);

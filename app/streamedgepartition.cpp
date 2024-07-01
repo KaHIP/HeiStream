@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
+#include <memory>
 
 #include "balance_configuration.h"
 #include "data_structure/graph_access.h"
@@ -27,6 +28,11 @@
 #include "timer.h"
 #include "tools/flat_buffer_writer.h"
 #include <sys/resource.h>
+#include "cpi/run_length_compression.hpp"
+
+#include "data_structure/compression_vectors/CompressionDataStructure.h"
+#include "data_structure/compression_vectors/RunLengthCompressionVector.h"
+#include "data_structure/compression_vectors/BatchRunLengthCompression.h"
 
 #define MIN(A, B) ((A) < (B)) ? (A) : (B)
 #define MAX(A, B) ((A) > (B)) ? (A) : (B)
@@ -91,6 +97,9 @@ int main(int argn, char **argv) {
     partition_config.use_queue = true;
     partition_config.initial_partitioning_repetitions=4;
 
+    // container for storing block assignments used by Fennel
+    std::shared_ptr<CompressionDataStructure<PartitionID>> block_assignments;
+
     int &passes = partition_config.num_streams_passes;
     for (partition_config.restream_number = 0;
          partition_config.restream_number < passes;
@@ -100,6 +109,15 @@ int main(int argn, char **argv) {
         // and initialize global objects
         graph_io_stream::readFirstLineStreamEdge(partition_config, graph_filename,
                                                  total_edge_cut);
+
+        // set up block assignment container based on algorithm configuration
+        if(partition_config.rle_length == 0) {
+            block_assignments = std::make_shared<RunLengthCompressionVector<PartitionID>>();
+        }
+        else if (partition_config.rle_length > 0) {
+            block_assignments = std::make_shared<BatchRunLengthCompression<PartitionID>>((partition_config.total_nodes /
+                    partition_config.rle_length) + 1);
+        }
 
         // while we have not streamed all nodes of the input graph
         while (partition_config.remaining_stream_nodes) {
@@ -178,7 +196,7 @@ int main(int argn, char **argv) {
     std::stringstream filename;
     std::string baseFilename = extractBaseFilename(graph_filename);
     if (!partition_config.benchmark && !partition_config.stream_output_progress) {
-        graph_io_stream::writePartitionStream(partition_config);
+        graph_io_stream::writePartitionStream(partition_config, block_assignments);
     }
 
     fb_writer.updateResourceConsumption(partition_config.read_graph_time,model_construction_time, mapping_time, partition_time, total_time, maxRSS);

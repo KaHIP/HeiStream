@@ -580,6 +580,14 @@ struct PartitionConfig
     double initial_partition_time;
     double stream_output_time;
 
+    //=======================================
+    //======= Run Length Compression ========
+    //=======================================
+
+    LongNodeID rle_length;
+    double kappa;
+    PartitionID previous_assignment;
+
         //=======================================
         // Conversion of graphs between formats =
         //=======================================

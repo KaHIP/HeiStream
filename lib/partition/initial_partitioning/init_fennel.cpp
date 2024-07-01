@@ -174,7 +174,14 @@ EdgeWeight init_fennel::fennel(PartitionConfig &partition_config, graph_access &
                                             fennel_weight *
                                             (G.getNodeWeight(node) * partition_config.fennel_alpha_gamma *
                                              random_functions::approx_sqrt(cluster_sizes[cur_block]));
-
+                                    // modify fennel score to encourage longer runs
+                                    if(cur_block == partition_config.previous_assignment){
+                                        if(cur_value > 0) {
+                                            cur_value = cur_value * partition_config.kappa;
+                                        } else {
+                                            cur_value = cur_value / partition_config.kappa;
+                                        }
+                                    }
                                     if ((cur_value > max_value ||
                                          (cur_value == max_value && random_obj.nextBool())) &&
                                         (cluster_sizes[cur_block] - cluster_ghost_nodes[cur_block] +
@@ -206,7 +213,14 @@ EdgeWeight init_fennel::fennel(PartitionConfig &partition_config, graph_access &
                             cur_value = hash_map[cur_block];
                             cur_value -= fennel_weight * (G.getNodeWeight(node) * partition_config.fennel_alpha_gamma *
                                                           random_functions::approx_sqrt(cluster_sizes[cur_block]));
-
+                            // modify fennel score to encourage longer runs
+                            if(cur_block == partition_config.previous_assignment){
+                                if(cur_value > 0) {
+                                    cur_value = cur_value * partition_config.kappa;
+                                } else {
+                                    cur_value = cur_value / partition_config.kappa;
+                                }
+                            }
                             if ((cur_value > max_value || (cur_value == max_value && random_obj.nextBool()))
                                 && (cluster_sizes[cur_block] - cluster_ghost_nodes[cur_block] + G.getNodeWeight(node) -
                                     G.getImplicitGhostNodes(node) <= partition_config.stream_total_upperbound)) {
@@ -230,7 +244,7 @@ EdgeWeight init_fennel::fennel(PartitionConfig &partition_config, graph_access &
                     }
                     cluster_ghost_nodes[max_block] += G.getImplicitGhostNodes(node);
                     G.setPartitionIndex(node, max_block);
-
+                    partition_config.previous_assignment = max_block;
                 }
         endfor
 

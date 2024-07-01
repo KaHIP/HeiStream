@@ -15,6 +15,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 #include "balance_configuration.h"
 #include "data_structure/graph_access.h"
@@ -29,6 +30,11 @@
 #include "partition/uncoarsening/refinement/mixed_refinement.h"
 #include "partition/uncoarsening/refinement/label_propagation_refinement/label_propagation_refinement.h"
 #include "tools/flat_buffer_writer.h"
+#include "cpi/run_length_compression.hpp"
+
+#include "data_structure/compression_vectors/CompressionDataStructure.h"
+#include "data_structure/compression_vectors/RunLengthCompressionVector.h"
+#include "data_structure/compression_vectors/BatchRunLengthCompression.h"
 
 #define MIN(A, B) ((A)<(B))?(A):(B)
 #define MAX(A, B) ((A)>(B))?(A):(B)
@@ -95,6 +101,11 @@ int main(int argn, char **argv) {
     partition_config.stream_input = true;
     graph_access *G = new graph_access();
 
+    // container for storing block assignments used by Fennel
+    std::shared_ptr<CompressionDataStructure<PartitionID>> block_assignments;
+    if(partition_config.num_streams_passes > 1 && partition_config.rle_length!= -1) {
+        std::cout << "Restreaming with run-length compression not yet supported." << std::endl;
+    }
 
     int &passes = partition_config.num_streams_passes;
     for (partition_config.restream_number = 0;
@@ -105,6 +116,15 @@ int main(int argn, char **argv) {
         graph_io_stream::readFirstLineStream(partition_config, graph_filename, total_edge_cut);
         graph_io_stream::loadRemainingLinesToBinary(partition_config, input);
         buffer_io_time += io_t.elapsed();
+
+        // set up block assignment container based on algorithm configuration
+        if(partition_config.rle_length == 0) {
+            block_assignments = std::make_shared<RunLengthCompressionVector<PartitionID>>();
+        }
+        else if (partition_config.rle_length > 0) {
+            block_assignments = std::make_shared<BatchRunLengthCompression<PartitionID>>((partition_config.total_nodes /
+                    partition_config.rle_length) + 1);
+        }
 
         while (partition_config.remaining_stream_nodes) {
             // ***************************** IO operations ***************************************
@@ -119,7 +139,7 @@ int main(int argn, char **argv) {
             // ***************************** build model ***************************************
             G->set_partition_count(partition_config.k);
             model_t.restart();
-            graph_io_stream::createModel(partition_config, *G, input);
+            graph_io_stream::createModel(partition_config, block_assignments, *G, input);
             model_construction_time += model_t.elapsed();
             buffer_mapping_time = 0;
             graph_io_stream::countAssignedNodes(partition_config);
@@ -136,7 +156,7 @@ int main(int argn, char **argv) {
             ofs.close();
 
             // ***************************** permanent assignment ***************************************
-            graph_io_stream::generalizeStreamPartition(partition_config, *G);
+            graph_io_stream::generalizeStreamPartition(partition_config, block_assignments, *G);
 
             global_mapping_time += t.elapsed();
 
@@ -152,7 +172,7 @@ int main(int argn, char **argv) {
                 if (partition_config.restream_number) {
                     filename << ".R" << partition_config.restream_number;
                 }
-                graph_io_stream::writePartitionStream(partition_config);
+                graph_io_stream::writePartitionStream(partition_config, block_assignments);
             }
 
         }
@@ -168,7 +188,7 @@ int main(int argn, char **argv) {
     long maxRSS = getMaxRSS();
     FlatBufferWriter fb_writer;
 
-    graph_io_stream::streamEvaluatePartition(partition_config, graph_filename, total_edge_cut);
+    graph_io_stream::streamEvaluatePartition(partition_config, block_assignments, graph_filename, total_edge_cut);
     fb_writer.updateVertexPartitionResults(total_edge_cut, qm.balance_full_stream(*partition_config.stream_blocks_weight));
 
     // write the partition to the disc
@@ -180,7 +200,7 @@ int main(int argn, char **argv) {
     }
 
     if (!partition_config.suppress_output) {
-        graph_io_stream::writePartitionStream(partition_config);
+        graph_io_stream::writePartitionStream(partition_config, block_assignments);
     } else {
         std::cout << "No partition will be written as output." << std::endl;
     }

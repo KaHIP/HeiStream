@@ -589,6 +589,11 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
     partition_config.initial_partition_time = 0;
     partition_config.stream_output_time = 0;
 
+    // run length compression
+    partition_config.rle_length=-1;
+    partition_config.kappa=1;
+    partition_config.previous_assignment=0;
+
 	// Initial partitioning via growning multiple BFS trees around artificial nodes
         partition_config.initial_part_multi_bfs		   = false;
         partition_config.multibfs_tries			   = 1;

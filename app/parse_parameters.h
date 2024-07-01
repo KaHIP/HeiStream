@@ -255,7 +255,14 @@ int parse_parameters(int argn, char **argv,
                          "Set the number of label propagation iterations for refinement. "
                          "Default: 5.");
 
-
+        // run length compression
+    struct arg_int *rle_length =
+            arg_int0(NULL, "rle_length", NULL,
+                     "Default = std::vector. Set to 0 for full RLE or any other "
+                     "value for vector of RLEs.");
+    struct arg_dbl *kappa = arg_dbl0(NULL, "kappa", NULL,
+                                     "Prioritize previous block assignment by "
+                                     "kappa times: Default: Disabled(1).");
 
 	// translation of graphs
         struct arg_str *graph_translation_specs		     = arg_str0(NULL, "graph_translation_specs", NULL, "Graph translation input and output formats (edgestream_metis|edgestream_metisbuffered|edgestream_metisexternal|edgestream_hmetis|metis_hmetis). (Default: edgestream_metis)");
@@ -313,6 +320,8 @@ int parse_parameters(int argn, char **argv,
                 filename_output, 
                 stream_buffer,
                 ram_stream,
+                rle_length,
+                kappa,
                 write_log,
                 stream_output_progress,
                 stream_allow_ghostnodes,
@@ -1503,6 +1512,14 @@ int parse_parameters(int argn, char **argv,
 
         if(write_log->count > 0) {
             partition_config.write_log = true;
+        }
+
+        if (rle_length->count > 0) {
+            partition_config.rle_length = (LongNodeID)rle_length->ival[0];
+        }
+
+        if (kappa->count > 0) {
+            partition_config.kappa = kappa->dval[0];
         }
 	  
         if(stream_output_progress->count > 0) {
