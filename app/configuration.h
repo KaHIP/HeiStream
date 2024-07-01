@@ -544,6 +544,50 @@ inline void configuration::standard( PartitionConfig & partition_config ) {
         (*partition_config.t2)				   = 0;
         (*partition_config.t3)				   = 0;
 
+    // Stream Edge Partition
+    partition_config.remaining_stream_nodes_OG = UNDEFINED_LONGNODE;    // new
+    partition_config.remaining_stream_graph_nodes = UNDEFINED_LONGNODE; // new
+    partition_config.total_nodes = UNDEFINED_LONGNODE;
+    partition_config.total_edges = UNDEFINED_LONGEDGE;
+    partition_config.fennel_edges = 0;
+    partition_config.lower_global_node_conv = 1;                  // new
+    partition_config.upper_global_node_conv = partition_config.k; // new
+    partition_config.incremental_edge_ID = 0;                     // new
+    partition_config.prev_batch_edge_ID = 0;                      // new
+    partition_config.start_pos = 3 * sizeof(unsigned long long);  // new
+    partition_config.total_stream_edges = 0;
+    partition_config.benchmark = false;
+    partition_config.dynamic_alpha = false;
+    partition_config.batch_alpha = true;
+    partition_config.minimal_mode = true;
+    partition_config.light_evaluator = false;
+    partition_config.convert_direct = false;
+    partition_config.async_mode = false;
+    partition_config.write_log = false;
+    partition_config.use_queue = false;
+    partition_config.last_edge_count = 0;
+    partition_config.back_node_count = 0;
+    partition_config.forward_node_count = 0;
+    partition_config.evaluate_mode = false;
+    partition_config.include_weights = false;
+    partition_config.parallel_nodes = 1;
+    partition_config.num_split_edges = -1;
+    partition_config.past_subset_size = -1;
+    partition_config.tau = 0;
+    partition_config.nodes_on_edge_conv = NULL; // new
+    partition_config.blocks_on_node = NULL; // new
+    partition_config.blocks_on_node_minimal = NULL; // NEW
+    partition_config.reps = 1;
+    partition_config.edge_partition=false;
+    partition_config.quotient_edges_count = 0;
+
+    // profiling for where the time is coming from
+    partition_config.read_graph_time = 0;
+    partition_config.finding_past_assignments_time = 0;
+    partition_config.assign_edge_ID_time = 0;
+    partition_config.graph_model_time = 0;
+    partition_config.initial_partition_time = 0;
+    partition_config.stream_output_time = 0;
 
 	// Initial partitioning via growning multiple BFS trees around artificial nodes
         partition_config.initial_part_multi_bfs		   = false;

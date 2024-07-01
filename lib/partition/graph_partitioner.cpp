@@ -226,11 +226,10 @@ void graph_partitioner::single_run( PartitionConfig & config, graph_access & G) 
 		uncoarsening uncoarsen;
 
 		graph_hierarchy hierarchy;
-
 		coarsen.perform_coarsening(config, G, hierarchy);
 		init_part.perform_initial_partitioning(config, hierarchy);
 		uncoarsen.perform_uncoarsening(config, hierarchy);
-	
+
                 config.graph_allready_partitioned = true;
                 config.balance_factor             = 0;
         }

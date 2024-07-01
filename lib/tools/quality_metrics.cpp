@@ -34,26 +34,26 @@ float quality_metrics::getFennelWeight(PartitionConfig & partition_config) {
 			fennel_weight = 2;
 			break;
 		case FENNELADP_LINEAR:
-			fennel_weight = 2*partition_config.remaining_stream_nodes/(float)partition_config.stream_nodes_assign->size();
+			fennel_weight = 2*partition_config.remaining_stream_nodes/(float)partition_config.total_stream_edges;
 			break;
 		case FENNELADP_MID_LINEAR:
-			fennel_tmp = 2*partition_config.remaining_stream_nodes/(float)partition_config.stream_nodes_assign->size();
+			fennel_tmp = 2*partition_config.remaining_stream_nodes/(float)partition_config.total_stream_edges;
 			if (fennel_tmp <= 1) {
 				fennel_weight = 2 * (fennel_tmp);
 			}
 			break;
 		case FENNELADP_QUADRATIC:
-			fennel_tmp = partition_config.remaining_stream_nodes/(float)partition_config.stream_nodes_assign->size();
+			fennel_tmp = partition_config.remaining_stream_nodes/(float)partition_config.total_stream_edges;
 			fennel_weight = 2*fennel_tmp*fennel_tmp;
 			break;
 		case FENNELADP_MID_QUADRATIC:
-			fennel_tmp = 2*partition_config.remaining_stream_nodes/(float)partition_config.stream_nodes_assign->size();
+			fennel_tmp = 2*partition_config.remaining_stream_nodes/(float)partition_config.total_stream_edges;
 			if (fennel_tmp <= 1) {
 				fennel_weight = 2*fennel_tmp*fennel_tmp;
 			}
 			break;
 		case FENNELADP_MID_CONSTANT:
-			fennel_tmp = partition_config.remaining_stream_nodes/(float)partition_config.stream_nodes_assign->size();
+			fennel_tmp = partition_config.remaining_stream_nodes/(float)partition_config.total_stream_edges;
 			if (fennel_tmp <= 1.5) {
 				fennel_weight = 0.5;
 			}

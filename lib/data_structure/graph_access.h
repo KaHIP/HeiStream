@@ -94,6 +94,17 @@ private:
         m_nodes[node].firstEdge = e;
     }
 
+    void start_construction_light(NodeID n, EdgeID m) {
+        m_building_graph = true;
+        node             = 0;
+        e                = 0;
+        m_last_source    = -1;
+
+        m_nodes.resize(n+1);
+        m_edges.resize(m);
+        m_nodes[node].firstEdge = e;
+    }
+
     EdgeID new_edge(NodeID source, NodeID target) {
         ASSERT_TRUE(m_building_graph);
         ASSERT_TRUE(e < m_edges.size());
@@ -136,6 +147,21 @@ private:
                 for (NodeID i = node; i>(unsigned int)(m_last_source+1); i--) {
                         m_nodes[i].firstEdge = m_nodes[m_last_source+1].firstEdge;
                 }
+        }
+    }
+
+    void finish_construction_light() {
+        // inert dummy node
+        m_nodes.resize(node+1);
+        m_edges.resize(e);
+        m_building_graph = false;
+
+        //fill isolated sources at the end
+        if ((unsigned int)(m_last_source) != node-1) {
+            //in that case at least the last node was an isolated node
+            for (NodeID i = node; i>(unsigned int)(m_last_source+1); i--) {
+                m_nodes[i].firstEdge = m_nodes[m_last_source+1].firstEdge;
+            }
         }
     }
 
@@ -187,11 +213,13 @@ class graph_access {
                 /* build methods */
                 /* ============================================================= */
                 void start_construction(NodeID nodes, EdgeID edges);
+                void start_construction_light(NodeID nodes, EdgeID edges);
 		void stream_repeat_construction(NodeID n, EdgeID m);
 
                 NodeID new_node();
                 EdgeID new_edge(NodeID source, NodeID target);
                 void finish_construction();
+                void finish_construction_light();
                 void stream_finish_construction();
 
                 /* ============================================================= */
@@ -270,6 +298,10 @@ inline void graph_access::start_construction(NodeID nodes, EdgeID edges) {
         graphref->start_construction(nodes, edges);
 }
 
+inline void graph_access::start_construction_light(NodeID nodes, EdgeID edges) {
+    graphref->start_construction_light(nodes, edges);
+}
+
 inline void graph_access::stream_repeat_construction(NodeID nodes, EdgeID edges) {
         graphref->stream_repeat_construction(nodes, edges);
 }
@@ -284,6 +316,10 @@ inline EdgeID graph_access::new_edge(NodeID source, NodeID target) {
 
 inline void graph_access::finish_construction() {
         graphref->finish_construction();
+}
+
+inline void graph_access::finish_construction_light() {
+    graphref->finish_construction_light();
 }
 
 inline void graph_access::stream_finish_construction() {

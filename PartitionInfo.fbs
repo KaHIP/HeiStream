@@ -1,0 +1,45 @@
+namespace PartitionInfo;
+
+table PartitionLog {
+    graph_metadata: GraphMetadata;
+    partition_configuration: PartitionConfiguration;
+    runtime: RunTime;
+    memory_consumption: MemoryConsumption;
+    metrics: PartitionMetrics;
+}
+
+table GraphMetadata {
+    filename: string;
+    num_nodes: ulong;
+    num_edges: ulong;
+}
+
+table PartitionConfiguration {
+    k: uint;
+    seed: int;
+    stream_buffer: ulong;
+    model_mode:int; //-1 = minimal mode
+    alpha:int; // 0 = batch alpha, 1 = static alpha, 2 = dynamic alpha
+}
+
+table RunTime {
+    io_time: double;
+    partition_time: double;
+    model_construction_time: double;
+    mapping_time: double;
+    total_time: double;
+}
+
+table PartitionMetrics{
+    edge_cut: int;
+    vertex_cut: uint;
+    replicas: uint;
+    replication_factor: double;
+    balance: double;
+}
+
+table MemoryConsumption{
+    max_rss: long;
+}
+
+root_type PartitionLog;
