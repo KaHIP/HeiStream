@@ -471,7 +471,8 @@ struct PartitionConfig
         LongEdgeID remaining_stream_edges;
         LongNodeID total_nodes;
         LongEdgeID total_edges;
-        bool write_log;
+        std::string output_path;
+        bool write_results;
         int remaining_stream_ew;
         LongNodeID total_stream_nodeweight;
         LongNodeID total_stream_nodecounter;

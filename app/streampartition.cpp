@@ -105,6 +105,7 @@ int main(int argn, char **argv) {
     std::shared_ptr<CompressionDataStructure<PartitionID>> block_assignments;
     if(partition_config.num_streams_passes > 1 && partition_config.rle_length!= -1) {
         std::cout << "Restreaming with run-length compression not yet supported." << std::endl;
+        exit(0);
     }
 
     int &passes = partition_config.num_streams_passes;

@@ -189,7 +189,6 @@ int parse_parameters(int argn, char **argv,
         struct arg_lit *fennel_contraction                   = arg_lit0(NULL, "fennel_contraction", "Contract graph based on Fennel's objetcive function. (Default: disabled)");
         struct arg_str *fennel_dynamics			     = arg_str0(NULL, "fennel_dynamics", NULL, "Dynamic behavior of Fennel objective in local search (original|double|linear|quadratic|midlinear|midquadratic|midconstant|edgecut). (Default: original)");
         struct arg_lit *ram_stream			     = arg_lit0(NULL, "ram_stream", "Stream from RAM instead of HD. (Default: disabled)");
-        struct arg_lit *write_log			     = arg_lit0(NULL, "write_log", "Log experimental output in a flatbuffer .bin file. (Default: disabled)");
         struct arg_str *fennel_batch_order		     = arg_str0(NULL, "fennel_batch_order", NULL, "Order to compute Fennel initial solution inside each batch (unchanged|ascdegree|descdegree). (Default: unchanged)");
         struct arg_lit *stream_initial_bisections	     = arg_lit0(NULL, "stream_initial_bisections", "Compute initial solution at the coarsest level for each buffer. (Default: compute preliminary Fennel)");
         struct arg_lit *stream_output_progress		     = arg_lit0(NULL, "stream_output_progress", "Output global partition after each batch is partitioned. (Default: disabled)");
@@ -264,7 +263,13 @@ int parse_parameters(int argn, char **argv,
                                      "Prioritize previous block assignment by "
                                      "kappa times: Default: Disabled(1).");
 
-	// translation of graphs
+    // experimental log
+    struct arg_str *output_path = arg_str0(
+            NULL, "output_path", NULL, "Specify the path of the output file(s).");
+    struct arg_lit *write_results			     = arg_lit0(NULL, "write_results", "Log experimental output in a flatbuffer .bin file. (Default: disabled)");
+
+
+    // translation of graphs
         struct arg_str *graph_translation_specs		     = arg_str0(NULL, "graph_translation_specs", NULL, "Graph translation input and output formats (edgestream_metis|edgestream_metisbuffered|edgestream_metisexternal|edgestream_hmetis|metis_hmetis). (Default: edgestream_metis)");
         struct arg_lit *no_relabel			     = arg_lit0(NULL, "no_relabel", "Keep original node IDs during graph translation. (Default: disabled)");
         struct arg_lit *input_header_absent		     = arg_lit0(NULL, "input_header_absent", "Input graph does not include first rown specifying number of nodes and edges. (Default: disabled)");
@@ -311,7 +316,7 @@ int parse_parameters(int argn, char **argv,
                 map_construction_algorithm, skip_map_ls, delta_gains, use_bin_id, use_compact_bin_id, full_matrix,
                 matching_type, global_cycle_iterations, suppress_output, kway_fm_limits, enable_convergence_map,
                 qap_label_iterations, adapt_bal, stream_buffer, use_fennel_objective,
-		fennel_contraction, ram_stream, write_log, stream_output_progress, fennel_dynamics, fennel_batch_order,
+		fennel_contraction, ram_stream, write_results, output_path, stream_output_progress, fennel_dynamics, fennel_batch_order,
 		ghost_nodes_procedure, stream_initial_bisections, stream_allow_ghostnodes, ghost_nodes_threshold,
 		num_streams_passes, restream_vcycle, batch_inbalance, initial_part_multi_bfs, initial_part_fennel,
 		skip_outer_ls, use_fennel_edgecut_objectives, stream_label_rounds, automatic_buffer_len, xxx,
@@ -322,7 +327,8 @@ int parse_parameters(int argn, char **argv,
                 ram_stream,
                 rle_length,
                 kappa,
-                write_log,
+                write_results,
+                output_path,
                 stream_output_progress,
                 stream_allow_ghostnodes,
                 num_streams_passes,
@@ -1510,8 +1516,12 @@ int parse_parameters(int argn, char **argv,
                 partition_config.ram_stream = true;
         }
 
-        if(write_log->count > 0) {
-            partition_config.write_log = true;
+        if(write_results->count > 0) {
+            partition_config.write_results = true;
+        }
+
+        if (output_path->count > 0) {
+            partition_config.output_path = output_path->sval[0];
         }
 
         if (rle_length->count > 0) {

@@ -436,43 +436,29 @@ void graph_io_stream::processNodeWeight(PartitionConfig &config,
 
 
 EdgeID graph_io_stream::insertRegularEdgeInBatch(PartitionConfig &config,
-                                                 std::vector <std::vector<std::pair < NodeID, EdgeWeight>>
+                                                 std::vector<std::vector<std::pair<NodeID, EdgeWeight>>>& all_edges,
+                                                 NodeID node, LongNodeID global_target, EdgeWeight edge_weight) {
+    NodeID target = (NodeID) (global_target - config.lower_global_node);
+    if(target == node) {
+        std::cerr <<  "The graph file contains self-loops, which are not supported. Please remove them from the file."
+        << std::endl;
+        exit(0);
+    }
+    if (target > node) {
+        return 0;
+    }
 
->& all_edges,
-NodeID node, LongNodeID
-global_target,
-EdgeWeight edge_weight
-) {
-NodeID target = (NodeID) (global_target - config.lower_global_node);
-if(target == node) {
-std::cerr <<  "The graph file contains self-loops, which are not supported. Please remove them from the file."  <<
-std::endl;
-exit(0);
-}
-if (target > node) {
-return 0;
-}
-
-return
-includeEdgeInBatch(all_edges, node, target,
-(1+config.double_non_ghost_edges)*edge_weight);
+    return includeEdgeInBatch(all_edges, node, target,
+                              (1+config.double_non_ghost_edges)*edge_weight);
 }
 
 
-EdgeID graph_io_stream::includeEdgeInBatch(std::vector < std::vector < std::pair < NodeID, EdgeWeight
->>>& all_edges,
-NodeID node, NodeID
-target,
-EdgeWeight edge_weight
-) {
-all_edges[node].
-push_back(std::make_pair(target, edge_weight)
-);
-all_edges[target].
-push_back(std::make_pair(node, edge_weight)
-);
+EdgeID graph_io_stream::includeEdgeInBatch(std::vector<std::vector<std::pair<NodeID, EdgeWeight>>>& all_edges,
+                                           NodeID node, NodeID target, EdgeWeight edge_weight) {
+    all_edges[node].push_back(std::make_pair(target, edge_weight));
+    all_edges[target].push_back(std::make_pair(node, edge_weight));
 
-return 2;
+    return 2;
 }
 
 
@@ -723,6 +709,19 @@ void graph_io_stream::writePartitionStream(PartitionConfig &config, const std::s
     if(config.edge_partition) {
         config.total_nodes = config.remaining_stream_nodes_OG;
     }
+    std::cout << "--------------------------------" << std::endl;
+}
+
+void graph_io_stream::writePartitionStream(PartitionConfig &config) {
+    std::ofstream f(config.filename_output.c_str());
+    std::cout << "Partition completed." << std::endl;
+    std::cout << "Writing partition to " << config.filename_output << " ... " << std::endl;
+
+    for (LongNodeID node = 0; node < config.total_nodes; node++) {
+        f << (*config.stream_nodes_assign)[node] << "\n";
+    }
+
+    f.close();
     std::cout << "--------------------------------" << std::endl;
 }
 
@@ -2345,7 +2344,8 @@ void graph_io_stream::readInputAsGraphBinary(PartitionConfig &partition_config, 
     partition_config.assign_edge_ID_time += aet.elapsed();
 }
 
-void graph_io_stream::constructBatchModel(PartitionConfig &partition_config, graph_access &G) {
+void graph_io_stream::constructBatchModel(PartitionConfig &partition_config,
+                                          graph_access &G) {
     //******construct graph model from input******
 
     graph_access *G_temp = new graph_access(); // stores graph constructed from nodes and edges in current buffer

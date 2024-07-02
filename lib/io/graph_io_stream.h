@@ -74,6 +74,9 @@ public:
     void writePartitionStream(PartitionConfig &config, const std::shared_ptr <CompressionDataStructure<PartitionID>> &block_assignments);
 
     static
+    void writePartitionStream(PartitionConfig &config);
+
+    static
     void readFirstLineStream(PartitionConfig &partition_config, std::string graph_filename, EdgeWeight &total_edge_cut);
 
     static
