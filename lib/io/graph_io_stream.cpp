@@ -400,7 +400,7 @@ void graph_io_stream::processQuotientEdgeInBatch(PartitionConfig &config, NodeID
         exit(0);
     }
     if ((*config.edge_block_nodes)[targetGlobalPar].size() >= 1) {
-        auto &curr_element = (*config.edge_block_nodes)[targetGlobalPar][0];
+        auto &curr_element = (*config.edge_block_nodes)[targetGlobalPar].back();
         if (curr_element.first == node) {
             curr_element.second += edge_weight;
             return;
@@ -1219,7 +1219,7 @@ graph_io_stream::processQuotientEdgeInBatchEdge(PartitionConfig &config, NodeID 
                                                 EdgeWeight edge_weight) {
     PartitionID targetGlobalPar = global_target;
     if ((*config.edge_block_nodes)[targetGlobalPar].size() >= 1) {
-        auto &curr_element = (*config.edge_block_nodes)[targetGlobalPar][0];
+        auto &curr_element = (*config.edge_block_nodes)[targetGlobalPar].back();
         // this scenario did not occur in my testing
         if (curr_element.first == node) {
             curr_element.second += edge_weight;
