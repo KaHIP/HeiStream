@@ -1,5 +1,5 @@
 /******************************************************************************
- * partition_snapshooter.h 
+ * partition_snapshooter.h
  * *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  * Christian Schulz <christian.schulz.phone@gmail.com>
@@ -10,29 +10,29 @@
 
 #include "data_structure/graph_access.h"
 
-//buffered partition snapshooter (singleton)
+// buffered partition snapshooter (singleton)
 class partition_snapshooter {
-        public: 
-                static partition_snapshooter * getInstance();
+   public:
+    static partition_snapshooter* getInstance();
 
-                void addSnapshot(graph_access & G); 
-                void addSnapshot(graph_access & G, std::vector<PartitionID> & partition_map); 
+    void addSnapshot(graph_access& G);
+    void addSnapshot(graph_access& G, std::vector<PartitionID>& partition_map);
 
-                //flushes buffer to disk
-                void flush_buffer();
-                void set_buffer_size( unsigned int new_buffer_size );
-        private: 
-                partition_snapshooter(); 
-                partition_snapshooter(const partition_snapshooter&) {}          
+    // flushes buffer to disk
+    void flush_buffer();
+    void set_buffer_size(unsigned int new_buffer_size);
 
-                virtual ~partition_snapshooter();
-                static partition_snapshooter* m_instance;
+   private:
+    partition_snapshooter();
+    partition_snapshooter(const partition_snapshooter&) {}
 
-                unsigned int m_buffer_size;
-                unsigned int m_idx;
+    virtual ~partition_snapshooter();
+    static partition_snapshooter* m_instance;
 
-                std::vector< std::vector< PartitionID >* > m_partition_map_buffer;
+    unsigned int m_buffer_size;
+    unsigned int m_idx;
+
+    std::vector<std::vector<PartitionID>*> m_partition_map_buffer;
 };
-
 
 #endif /* end of include guard: PARTITION_SNAPSHOOTER_LGCUMS2I */

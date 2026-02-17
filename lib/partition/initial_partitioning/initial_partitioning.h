@@ -1,5 +1,5 @@
 /******************************************************************************
- * initial_partitioning.h 
+ * initial_partitioning.h
  * *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  * Christian Schulz <christian.schulz.phone@gmail.com>
@@ -9,15 +9,15 @@
 #define INITIAL_PARTITIONING_D7VA0XO9
 
 #include "data_structure/graph_hierarchy.h"
-#include "partition_config.h"
+#include "partition/partition_config.h"
 
 class initial_partitioning {
-public:
-        initial_partitioning( );
-        virtual ~initial_partitioning();
-        void perform_initial_partitioning(PartitionConfig & config, graph_hierarchy & hierarchy);
-        void perform_initial_partitioning(PartitionConfig & config, graph_access &  G);
+   public:
+    initial_partitioning();
+    virtual ~initial_partitioning();
+    void perform_initial_partitioning(Config& config, graph_hierarchy& hierarchy,
+                                      int stream_pass_index = 0);
+    void perform_initial_partitioning(Config& config, graph_access& G, int stream_pass_index = 0);
 };
-
 
 #endif /* end of include guard: INITIAL_PARTITIONING_D7VA0XO9 */

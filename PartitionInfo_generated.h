@@ -201,7 +201,14 @@ struct PartitionConfiguration FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::T
     VT_SEED = 6,
     VT_STREAM_BUFFER = 8,
     VT_MODEL_MODE = 10,
-    VT_ALPHA = 12
+    VT_ALPHA = 12,
+    VT_BATCH_SIZE = 14,
+    VT_MAX_BUFFER_SIZE = 16,
+    VT_BUFFER_SCORE_TYPE = 18,
+    VT_BQ_DISC_FACTOR = 20,
+    VT_HAA_THETA = 22,
+    VT_CBS_THETA = 24,
+    VT_BB_RATIO = 26
   };
   uint32_t k() const {
     return GetField<uint32_t>(VT_K, 0);
@@ -218,6 +225,27 @@ struct PartitionConfiguration FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::T
   int32_t alpha() const {
     return GetField<int32_t>(VT_ALPHA, 0);
   }
+  uint64_t batch_size() const {
+    return GetField<uint64_t>(VT_BATCH_SIZE, 0);
+  }
+  uint64_t max_buffer_size() const {
+    return GetField<uint64_t>(VT_MAX_BUFFER_SIZE, 0);
+  }
+  int32_t buffer_score_type() const {
+    return GetField<int32_t>(VT_BUFFER_SCORE_TYPE, 0);
+  }
+  uint32_t bq_disc_factor() const {
+    return GetField<uint32_t>(VT_BQ_DISC_FACTOR, 0);
+  }
+  float haa_theta() const {
+    return GetField<float>(VT_HAA_THETA, 0.0f);
+  }
+  float cbs_theta() const {
+    return GetField<float>(VT_CBS_THETA, 0.0f);
+  }
+  uint32_t bb_ratio() const {
+    return GetField<uint32_t>(VT_BB_RATIO, 0);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_K, 4) &&
@@ -225,6 +253,13 @@ struct PartitionConfiguration FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::T
            VerifyField<uint64_t>(verifier, VT_STREAM_BUFFER, 8) &&
            VerifyField<int32_t>(verifier, VT_MODEL_MODE, 4) &&
            VerifyField<int32_t>(verifier, VT_ALPHA, 4) &&
+           VerifyField<uint64_t>(verifier, VT_BATCH_SIZE, 8) &&
+           VerifyField<uint64_t>(verifier, VT_MAX_BUFFER_SIZE, 8) &&
+           VerifyField<int32_t>(verifier, VT_BUFFER_SCORE_TYPE, 4) &&
+           VerifyField<uint32_t>(verifier, VT_BQ_DISC_FACTOR, 4) &&
+           VerifyField<float>(verifier, VT_HAA_THETA, 4) &&
+           VerifyField<float>(verifier, VT_CBS_THETA, 4) &&
+           VerifyField<uint32_t>(verifier, VT_BB_RATIO, 4) &&
            verifier.EndTable();
   }
 };
@@ -248,6 +283,27 @@ struct PartitionConfigurationBuilder {
   void add_alpha(int32_t alpha) {
     fbb_.AddElement<int32_t>(PartitionConfiguration::VT_ALPHA, alpha, 0);
   }
+  void add_batch_size(uint64_t batch_size) {
+    fbb_.AddElement<uint64_t>(PartitionConfiguration::VT_BATCH_SIZE, batch_size, 0);
+  }
+  void add_max_buffer_size(uint64_t max_buffer_size) {
+    fbb_.AddElement<uint64_t>(PartitionConfiguration::VT_MAX_BUFFER_SIZE, max_buffer_size, 0);
+  }
+  void add_buffer_score_type(int32_t buffer_score_type) {
+    fbb_.AddElement<int32_t>(PartitionConfiguration::VT_BUFFER_SCORE_TYPE, buffer_score_type, 0);
+  }
+  void add_bq_disc_factor(uint32_t bq_disc_factor) {
+    fbb_.AddElement<uint32_t>(PartitionConfiguration::VT_BQ_DISC_FACTOR, bq_disc_factor, 0);
+  }
+  void add_haa_theta(float haa_theta) {
+    fbb_.AddElement<float>(PartitionConfiguration::VT_HAA_THETA, haa_theta, 0.0f);
+  }
+  void add_cbs_theta(float cbs_theta) {
+    fbb_.AddElement<float>(PartitionConfiguration::VT_CBS_THETA, cbs_theta, 0.0f);
+  }
+  void add_bb_ratio(uint32_t bb_ratio) {
+    fbb_.AddElement<uint32_t>(PartitionConfiguration::VT_BB_RATIO, bb_ratio, 0);
+  }
   explicit PartitionConfigurationBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -265,9 +321,23 @@ inline ::flatbuffers::Offset<PartitionConfiguration> CreatePartitionConfiguratio
     int32_t seed = 0,
     uint64_t stream_buffer = 0,
     int32_t model_mode = 0,
-    int32_t alpha = 0) {
+    int32_t alpha = 0,
+    uint64_t batch_size = 0,
+    uint64_t max_buffer_size = 0,
+    int32_t buffer_score_type = 0,
+    uint32_t bq_disc_factor = 0,
+    float haa_theta = 0.0f,
+    float cbs_theta = 0.0f,
+    uint32_t bb_ratio = 0) {
   PartitionConfigurationBuilder builder_(_fbb);
+  builder_.add_max_buffer_size(max_buffer_size);
+  builder_.add_batch_size(batch_size);
   builder_.add_stream_buffer(stream_buffer);
+  builder_.add_bb_ratio(bb_ratio);
+  builder_.add_cbs_theta(cbs_theta);
+  builder_.add_haa_theta(haa_theta);
+  builder_.add_bq_disc_factor(bq_disc_factor);
+  builder_.add_buffer_score_type(buffer_score_type);
   builder_.add_alpha(alpha);
   builder_.add_model_mode(model_mode);
   builder_.add_seed(seed);
@@ -281,8 +351,9 @@ struct RunTime FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
     VT_IO_TIME = 4,
     VT_PARTITION_TIME = 6,
     VT_MODEL_CONSTRUCTION_TIME = 8,
-    VT_MAPPING_TIME = 10,
-    VT_TOTAL_TIME = 12
+    VT_POSTPROCESS_TIME = 10,
+    VT_BUFFER_MAINTENANCE_TIME = 12,
+    VT_TOTAL_TIME = 14
   };
   double io_time() const {
     return GetField<double>(VT_IO_TIME, 0.0);
@@ -293,8 +364,11 @@ struct RunTime FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   double model_construction_time() const {
     return GetField<double>(VT_MODEL_CONSTRUCTION_TIME, 0.0);
   }
-  double mapping_time() const {
-    return GetField<double>(VT_MAPPING_TIME, 0.0);
+  double postprocess_time() const {
+    return GetField<double>(VT_POSTPROCESS_TIME, 0.0);
+  }
+  double buffer_maintenance_time() const {
+    return GetField<double>(VT_BUFFER_MAINTENANCE_TIME, 0.0);
   }
   double total_time() const {
     return GetField<double>(VT_TOTAL_TIME, 0.0);
@@ -304,7 +378,8 @@ struct RunTime FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
            VerifyField<double>(verifier, VT_IO_TIME, 8) &&
            VerifyField<double>(verifier, VT_PARTITION_TIME, 8) &&
            VerifyField<double>(verifier, VT_MODEL_CONSTRUCTION_TIME, 8) &&
-           VerifyField<double>(verifier, VT_MAPPING_TIME, 8) &&
+           VerifyField<double>(verifier, VT_POSTPROCESS_TIME, 8) &&
+           VerifyField<double>(verifier, VT_BUFFER_MAINTENANCE_TIME, 8) &&
            VerifyField<double>(verifier, VT_TOTAL_TIME, 8) &&
            verifier.EndTable();
   }
@@ -323,8 +398,11 @@ struct RunTimeBuilder {
   void add_model_construction_time(double model_construction_time) {
     fbb_.AddElement<double>(RunTime::VT_MODEL_CONSTRUCTION_TIME, model_construction_time, 0.0);
   }
-  void add_mapping_time(double mapping_time) {
-    fbb_.AddElement<double>(RunTime::VT_MAPPING_TIME, mapping_time, 0.0);
+  void add_postprocess_time(double postprocess_time) {
+    fbb_.AddElement<double>(RunTime::VT_POSTPROCESS_TIME, postprocess_time, 0.0);
+  }
+  void add_buffer_maintenance_time(double buffer_maintenance_time) {
+    fbb_.AddElement<double>(RunTime::VT_BUFFER_MAINTENANCE_TIME, buffer_maintenance_time, 0.0);
   }
   void add_total_time(double total_time) {
     fbb_.AddElement<double>(RunTime::VT_TOTAL_TIME, total_time, 0.0);
@@ -345,11 +423,13 @@ inline ::flatbuffers::Offset<RunTime> CreateRunTime(
     double io_time = 0.0,
     double partition_time = 0.0,
     double model_construction_time = 0.0,
-    double mapping_time = 0.0,
+    double postprocess_time = 0.0,
+    double buffer_maintenance_time = 0.0,
     double total_time = 0.0) {
   RunTimeBuilder builder_(_fbb);
   builder_.add_total_time(total_time);
-  builder_.add_mapping_time(mapping_time);
+  builder_.add_buffer_maintenance_time(buffer_maintenance_time);
+  builder_.add_postprocess_time(postprocess_time);
   builder_.add_model_construction_time(model_construction_time);
   builder_.add_partition_time(partition_time);
   builder_.add_io_time(io_time);

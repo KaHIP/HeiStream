@@ -20,13 +20,21 @@ table PartitionConfiguration {
     stream_buffer: ulong;
     model_mode:int; //-1 = minimal mode
     alpha:int; // 0 = batch alpha, 1 = static alpha, 2 = dynamic alpha
+    batch_size: ulong;
+    max_buffer_size: ulong;
+    buffer_score_type: int;
+    bq_disc_factor: uint;
+    haa_theta: float;
+    cbs_theta: float;
+    bb_ratio: uint;
 }
 
 table RunTime {
     io_time: double;
     partition_time: double;
     model_construction_time: double;
-    mapping_time: double;
+    postprocess_time: double;
+    buffer_maintenance_time: double;
     total_time: double;
 }
 

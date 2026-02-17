@@ -1,5 +1,5 @@
 /******************************************************************************
- * misc.h 
+ * misc.h
  * *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  * Christian Schulz <christian.schulz.phone@gmail.com>
@@ -9,15 +9,14 @@
 #define MISC_C6QUUWLI
 
 #include "data_structure/graph_access.h"
-#include "partition_config.h"
+#include "partition/partition_config.h"
 
 class misc {
-public:
-        misc();
-        virtual ~misc();
+   public:
+    misc();
+    virtual ~misc();
 
-        void balance_singletons(const PartitionConfig & config, graph_access & G);
+    void balance_singletons(const Config& config, graph_access& G);
 };
-
 
 #endif /* end of include guard: MISC_C6QUUWLI */
