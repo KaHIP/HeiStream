@@ -53,7 +53,6 @@ Our experiments demonstrate that HeiStreamE produces the best solution quality (
 
 - C++17 compiler (e.g., `g++`/`clang++`)
 - CMake
-- MPI development package
 - OpenMP support in the compiler toolchain
 - Git (needed by CMake `FetchContent` dependencies)
 
