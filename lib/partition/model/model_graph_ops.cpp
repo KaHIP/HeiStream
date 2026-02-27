@@ -27,7 +27,7 @@ EdgeID insert_regular_edge(Config& config,
         std::cerr << "The graph file contains self-loops, which are not supported. "
                      "Please remove them from the file."
                   << '\n';
-        exit(0);
+        exit(1);
     }
     if (target > node) {
         // Store each undirected edge once; symmetric edge is added in include_edge.

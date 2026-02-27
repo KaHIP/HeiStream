@@ -31,7 +31,7 @@ EdgeID insert_regular_local_edge_in_batch(
         std::cerr << "The graph file contains self-loops, which are not supported. "
                      "Please remove them from the file."
                   << '\n';
-        exit(0);
+        exit(1);
     }
     return partition_model::graph_ops::include_edge(all_edges, node, local_target,
                                                     non_ghost_multiplier * edge_weight);
