@@ -47,10 +47,11 @@ void open_binary_stream(io::stream::StreamCursor& cursor, const std::string& gra
 
 bool read_next_non_comment_line(std::ifstream& stream_in, std::string& line) {
     while (std::getline(stream_in, line)) {
-        if (line.empty()) {
-            continue;
-        }
-        if (line[0] == '%') {
+        // Only skip comment lines (starting with %).
+        // Do NOT skip empty lines — in METIS format, an empty line in the
+        // adjacency body represents an isolated node with no neighbors.
+        // Skipping empty lines shifts all subsequent node indices.
+        if (!line.empty() && line[0] == '%') {
             continue;
         }
         return true;
