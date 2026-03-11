@@ -63,6 +63,9 @@ The resulting binaries are `deploy/heistream` and `deploy/heistream_edge`.
 # Node partitioning with priority buffer (BuffCut)
 ./deploy/heistream graph.graph --k=8 --batch_size=32768 --buffer_size=65536
 
+# BuffCut with parallel pipeline
+./deploy/heistream graph.graph --k=8 --batch_size=32768 --buffer_size=65536 --run-parallel
+
 # Edge partitioning
 ./deploy/heistream_edge graph.graph --k=8 --batch_size=32768
 
