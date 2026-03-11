@@ -11,6 +11,7 @@ HeiStream 1.00
 [![Homebrew](https://img.shields.io/badge/Homebrew-available-orange)](https://github.com/KaHIP/homebrew-kahip)
 [![JEA'22](https://img.shields.io/badge/JEA'22-10.1145/3546911-blue)](https://doi.org/10.1145/3546911)
 [![SEA'24](https://img.shields.io/badge/SEA'24-10.4230/LIPIcs.SEA.2024.5-blue)](https://doi.org/10.4230/LIPIcs.SEA.2024.5)
+[![arXiv](https://img.shields.io/badge/arXiv-2602.21248-b31b1b.svg)](https://arxiv.org/abs/2602.21248)
 [![Heidelberg University](https://img.shields.io/badge/Heidelberg-University-c1002a)](https://www.uni-heidelberg.de)
 =====
 
@@ -163,6 +164,17 @@ If you use HeiStream or HeiStreamE in your research, please cite:
     pages     = {5:1--5:21},
     year      = {2024},
     doi       = {10.4230/LIPIcs.SEA.2024.5}
+}
+```
+
+```bibtex
+@article{buffcut,
+    author    = {Linus Baumg{\"{a}}rtner and Adil Chhabra and Marcelo Fonseca Faraj and Christian Schulz},
+    title     = {BuffCut: Prioritized Buffered Streaming Graph Partitioning},
+    journal   = {CoRR},
+    volume    = {abs/2602.21248},
+    year      = {2026},
+    url       = {https://arxiv.org/abs/2602.21248}
 }
 ```
 
