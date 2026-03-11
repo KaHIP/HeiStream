@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="250" rx="12" ry="12" fill="#1a1d23"/>
+
+  <!-- Title: "Hei" in cyan, "Stream" in white -->
+  <text x="40" y="95" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-weight="bold" font-size="56">
+    <tspan fill="#00bcd4">Hei</tspan><tspan fill="#e0e0e0">Stream</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="42" y="125" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#aaaaaa">
+    Buffered Streaming Graph Partitioning
+  </text>
+
+  <!-- Second subtitle -->
+  <text x="42" y="147" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#777777">
+    Node Partitioning &amp; Edge Partitioning for Massive Graphs
+  </text>
+
+  <!-- Part of KaHIP badge -->
+  <rect x="42" y="165" width="105" height="24" rx="12" ry="12" fill="#5a7a5a" fill-opacity="0.35" stroke="#5a7a5a" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="94" y="181.5" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#8faa8f">Part of KaHIP</text>
+
+  <!-- JEA 2022 badge -->
+  <rect x="158" y="165" width="70" height="24" rx="12" ry="12" fill="#3498db" fill-opacity="0.12" stroke="#3498db" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="193" y="181.5" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#3498db">JEA 2022</text>
+
+  <!-- SEA 2024 badge -->
+  <rect x="238" y="165" width="72" height="24" rx="12" ry="12" fill="#f39c12" fill-opacity="0.12" stroke="#f39c12" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="274" y="181.5" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#f39c12">SEA 2024</text>
+
+  <!-- === Streaming + Multilevel diagram (right side) === -->
+
+  <!-- Stream input track -->
+  <line x1="420" y1="70" x2="530" y2="70" stroke="#555" stroke-width="1.5"/>
+  <polygon points="528,66 536,70 528,74" fill="#666"/>
+
+  <!-- Streaming nodes (incoming) -->
+  <circle cx="430" cy="70" r="3.5" fill="#666" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="448" cy="70" r="4" fill="#888" opacity="0.35" filter="url(#glow)"/>
+  <circle cx="468" cy="70" r="4.5" fill="#aaa" opacity="0.5" filter="url(#glow)"/>
+  <circle cx="490" cy="70" r="5" fill="#bbb" opacity="0.65" filter="url(#glow)"/>
+  <circle cx="514" cy="70" r="5.5" fill="#ddd" opacity="0.85" filter="url(#glow)"/>
+
+  <text x="475" y="55" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#666">stream</text>
+
+  <!-- Buffer zone -->
+  <rect x="545" y="42" width="90" height="56" rx="6" ry="6" fill="#f39c12" fill-opacity="0.06" stroke="#f39c12" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="590" y="38" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#f39c12" opacity="0.6">batch / buffer</text>
+
+  <!-- Nodes in buffer -->
+  <circle cx="565" cy="58" r="5" fill="#00bcd4" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="585" cy="63" r="5" fill="#e74c3c" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="605" cy="56" r="5" fill="#3498db" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="575" cy="78" r="5" fill="#2ecc71" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="598" cy="80" r="5" fill="#00bcd4" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="618" cy="74" r="5" fill="#e74c3c" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- Edges in buffer -->
+  <line x1="565" y1="58" x2="585" y2="63" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="585" y1="63" x2="605" y2="56" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="575" y1="78" x2="598" y2="80" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="598" y1="80" x2="618" y2="74" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="565" y1="58" x2="575" y2="78" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+  <line x1="605" y1="56" x2="618" y2="74" stroke="#888" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Arrow from buffer to multilevel -->
+  <line x1="590" y1="100" x2="590" y2="118" stroke="#555" stroke-width="1.2"/>
+  <polygon points="586,116 590,124 594,116" fill="#666"/>
+
+  <!-- Multilevel zone -->
+  <rect x="545" y="128" width="90" height="56" rx="6" ry="6" fill="#00bcd4" fill-opacity="0.06" stroke="#00bcd4" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="590" y="124" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#00bcd4" opacity="0.6">multilevel</text>
+
+  <!-- Coarsening levels (nested graphs getting smaller) -->
+  <!-- Level 0 (finest) -->
+  <circle cx="558" cy="143" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="568" cy="140" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="578" cy="145" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="588" cy="139" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="598" cy="144" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="608" cy="140" r="3" fill="#ddd" opacity="0.5"/>
+  <circle cx="618" cy="143" r="3" fill="#ddd" opacity="0.5"/>
+  <!-- Level 1 (coarser) -->
+  <circle cx="565" cy="157" r="3.5" fill="#aaa" opacity="0.6"/>
+  <circle cx="582" cy="155" r="3.5" fill="#aaa" opacity="0.6"/>
+  <circle cx="600" cy="158" r="3.5" fill="#aaa" opacity="0.6"/>
+  <circle cx="618" cy="155" r="3.5" fill="#aaa" opacity="0.6"/>
+  <!-- Level 2 (coarsest) -->
+  <circle cx="577" cy="172" r="4" fill="#e74c3c" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="603" cy="172" r="4" fill="#3498db" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- V-shape arrows for coarsen/uncoarsen -->
+  <path d="M560,148 L575,167" fill="none" stroke="#555" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <path d="M622,148 L607,167" fill="none" stroke="#555" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+  <!-- Arrow to partition blocks -->
+  <path d="M635,156 Q660,156 685,100" fill="none" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+  <path d="M635,156 Q660,156 685,156" fill="none" stroke="#3498db" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+  <path d="M635,156 Q660,156 685,212" fill="none" stroke="#2ecc71" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+
+  <!-- Partition block 1 (red) -->
+  <rect x="690" y="75" width="180" height="50" rx="6" ry="6" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="720" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="755" cy="93" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="790" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="825" cy="95" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <path d="M720,100 Q737,88 755,93" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M755,93 Q772,93 790,100" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M790,100 Q807,92 825,95" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+
+  <!-- Partition block 2 (blue) -->
+  <rect x="690" y="131" width="180" height="50" rx="6" ry="6" fill="#3498db" fill-opacity="0.06" stroke="#3498db" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="720" cy="158" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="755" cy="150" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="790" cy="157" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="825" cy="152" r="6" fill="#3498db" filter="url(#glow)"/>
+  <path d="M720,158 Q737,145 755,150" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M755,150 Q772,150 790,157" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M790,157 Q807,148 825,152" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+
+  <!-- Partition block 3 (green) -->
+  <rect x="690" y="187" width="180" height="50" rx="6" ry="6" fill="#2ecc71" fill-opacity="0.06" stroke="#2ecc71" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="720" cy="213" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="755" cy="206" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="790" cy="214" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="825" cy="208" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <path d="M720,213 Q737,201 755,206" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M755,206 Q772,207 790,214" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M790,214 Q807,204 825,208" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+
+  <!-- Block labels -->
+  <text x="780" y="72" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#666">k blocks</text>
+
+  <!-- Bottom caption -->
+  <text x="590" y="240" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#555">
+    buffered streaming multilevel graph partitioning
+  </text>
+
+  <!-- Legend -->
+  <rect x="420" y="218" width="8" height="8" rx="1.5" fill="#f39c12" opacity="0.5"/>
+  <text x="433" y="226" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#888">buffer</text>
+  <rect x="472" y="218" width="8" height="8" rx="1.5" fill="#00bcd4" opacity="0.5"/>
+  <text x="485" y="226" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#888">multilevel</text>
+  <circle cx="543" cy="222" r="4" fill="#e74c3c" opacity="0.7"/>
+  <text x="553" y="226" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#888">block 1</text>
+  <circle cx="603" cy="222" r="4" fill="#3498db" opacity="0.7"/>
+  <text x="613" y="226" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#888">block 2</text>
+  <circle cx="663" cy="222" r="4" fill="#2ecc71" opacity="0.7"/>
+  <text x="673" y="226" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#888">block 3</text>
+</svg>
