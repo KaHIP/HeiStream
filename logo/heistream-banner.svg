@@ -105,42 +105,42 @@
   <path d="M622,148 L607,167" fill="none" stroke="#555" stroke-width="0.8" stroke-dasharray="2,2"/>
 
   <!-- Arrow to partition blocks -->
-  <path d="M635,156 Q660,156 685,100" fill="none" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
-  <path d="M635,156 Q660,156 685,156" fill="none" stroke="#3498db" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
-  <path d="M635,156 Q660,156 685,212" fill="none" stroke="#2ecc71" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+  <path d="M635,156 Q665,156 705,100" fill="none" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+  <path d="M635,156 Q665,156 705,156" fill="none" stroke="#3498db" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+  <path d="M635,156 Q665,156 705,212" fill="none" stroke="#2ecc71" stroke-width="1.2" stroke-dasharray="4,3" stroke-opacity="0.5"/>
 
   <!-- Partition block 1 (red) -->
-  <rect x="690" y="75" width="180" height="50" rx="6" ry="6" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-opacity="0.18" stroke-width="1"/>
-  <circle cx="720" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
-  <circle cx="755" cy="93" r="6" fill="#e74c3c" filter="url(#glow)"/>
-  <circle cx="790" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
-  <circle cx="825" cy="95" r="6" fill="#e74c3c" filter="url(#glow)"/>
-  <path d="M720,100 Q737,88 755,93" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M755,93 Q772,93 790,100" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M790,100 Q807,92 825,95" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+  <rect x="710" y="75" width="175" height="50" rx="6" ry="6" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="738" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="770" cy="93" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="802" cy="100" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="834" cy="95" r="6" fill="#e74c3c" filter="url(#glow)"/>
+  <path d="M738,100 Q754,88 770,93" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M770,93 Q786,93 802,100" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M802,100 Q818,92 834,95" fill="none" stroke="#e74c3c" stroke-opacity="0.3" stroke-width="1.2"/>
 
   <!-- Partition block 2 (blue) -->
-  <rect x="690" y="131" width="180" height="50" rx="6" ry="6" fill="#3498db" fill-opacity="0.06" stroke="#3498db" stroke-opacity="0.18" stroke-width="1"/>
-  <circle cx="720" cy="158" r="6" fill="#3498db" filter="url(#glow)"/>
-  <circle cx="755" cy="150" r="6" fill="#3498db" filter="url(#glow)"/>
-  <circle cx="790" cy="157" r="6" fill="#3498db" filter="url(#glow)"/>
-  <circle cx="825" cy="152" r="6" fill="#3498db" filter="url(#glow)"/>
-  <path d="M720,158 Q737,145 755,150" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M755,150 Q772,150 790,157" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M790,157 Q807,148 825,152" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+  <rect x="710" y="131" width="175" height="50" rx="6" ry="6" fill="#3498db" fill-opacity="0.06" stroke="#3498db" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="738" cy="158" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="770" cy="150" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="802" cy="157" r="6" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="834" cy="152" r="6" fill="#3498db" filter="url(#glow)"/>
+  <path d="M738,158 Q754,145 770,150" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M770,150 Q786,150 802,157" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M802,157 Q818,148 834,152" fill="none" stroke="#3498db" stroke-opacity="0.3" stroke-width="1.2"/>
 
   <!-- Partition block 3 (green) -->
-  <rect x="690" y="187" width="180" height="50" rx="6" ry="6" fill="#2ecc71" fill-opacity="0.06" stroke="#2ecc71" stroke-opacity="0.18" stroke-width="1"/>
-  <circle cx="720" cy="213" r="6" fill="#2ecc71" filter="url(#glow)"/>
-  <circle cx="755" cy="206" r="6" fill="#2ecc71" filter="url(#glow)"/>
-  <circle cx="790" cy="214" r="6" fill="#2ecc71" filter="url(#glow)"/>
-  <circle cx="825" cy="208" r="6" fill="#2ecc71" filter="url(#glow)"/>
-  <path d="M720,213 Q737,201 755,206" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M755,206 Q772,207 790,214" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
-  <path d="M790,214 Q807,204 825,208" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+  <rect x="710" y="187" width="175" height="50" rx="6" ry="6" fill="#2ecc71" fill-opacity="0.06" stroke="#2ecc71" stroke-opacity="0.18" stroke-width="1"/>
+  <circle cx="738" cy="213" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="770" cy="206" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="802" cy="214" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="834" cy="208" r="6" fill="#2ecc71" filter="url(#glow)"/>
+  <path d="M738,213 Q754,201 770,206" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M770,206 Q786,207 802,214" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
+  <path d="M802,214 Q818,204 834,208" fill="none" stroke="#2ecc71" stroke-opacity="0.3" stroke-width="1.2"/>
 
   <!-- Block labels -->
-  <text x="780" y="72" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#666">k blocks</text>
+  <text x="797" y="72" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#666">k blocks</text>
 
   <!-- Bottom caption -->
   <text x="590" y="240" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#555">
