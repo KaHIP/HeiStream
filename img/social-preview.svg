@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1d23"/>
+      <stop offset="100%" stop-color="#141720"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#bg)"/>
+
+  <!-- === Streaming + Multilevel diagram (left side) === -->
+
+  <!-- Stream input track -->
+  <line x1="50" y1="110" x2="220" y2="110" stroke="#555" stroke-width="2"/>
+  <polygon points="216,105 228,110 216,115" fill="#666"/>
+  <text x="135" y="90" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#666">stream</text>
+
+  <!-- Streaming nodes (incoming, growing opacity) -->
+  <circle cx="65"  cy="110" r="5" fill="#666" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="95"  cy="110" r="6" fill="#888" opacity="0.35" filter="url(#glow)"/>
+  <circle cx="125" cy="110" r="7" fill="#aaa" opacity="0.5" filter="url(#glow)"/>
+  <circle cx="160" cy="110" r="8" fill="#bbb" opacity="0.65" filter="url(#glow)"/>
+  <circle cx="198" cy="110" r="9" fill="#ddd" opacity="0.85" filter="url(#glow)"/>
+
+  <!-- Buffer zone -->
+  <rect x="240" y="60" width="150" height="100" rx="10" fill="#f39c12" fill-opacity="0.06" stroke="#f39c12" stroke-opacity="0.25" stroke-width="1.5"/>
+  <text x="315" y="50" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#f39c12" opacity="0.7">batch / buffer</text>
+
+  <!-- Nodes in buffer -->
+  <circle cx="270" cy="90"  r="8" fill="#00bcd4" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="300" cy="98"  r="8" fill="#e74c3c" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="335" cy="86"  r="8" fill="#3498db" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="365" cy="96"  r="8" fill="#2ecc71" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="280" cy="128" r="8" fill="#2ecc71" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="315" cy="132" r="8" fill="#00bcd4" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="350" cy="125" r="8" fill="#e74c3c" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- Edges in buffer -->
+  <line x1="270" y1="90"  x2="300" y2="98"  stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="300" y1="98"  x2="335" y2="86"  stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="335" y1="86"  x2="365" y2="96"  stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="280" y1="128" x2="315" y2="132" stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="315" y1="132" x2="350" y2="125" stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="270" y1="90"  x2="280" y2="128" stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+  <line x1="335" y1="86"  x2="350" y2="125" stroke="#888" stroke-opacity="0.3" stroke-width="1.2"/>
+
+  <!-- Arrow buffer -> multilevel -->
+  <line x1="315" y1="165" x2="315" y2="200" stroke="#555" stroke-width="1.5"/>
+  <polygon points="310,197 315,208 320,197" fill="#666"/>
+
+  <!-- Multilevel zone -->
+  <rect x="240" y="215" width="150" height="100" rx="10" fill="#00bcd4" fill-opacity="0.06" stroke="#00bcd4" stroke-opacity="0.25" stroke-width="1.5"/>
+  <text x="315" y="208" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#00bcd4" opacity="0.7">multilevel</text>
+
+  <!-- Level 0 (finest) -->
+  <circle cx="260" cy="238" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="278" cy="234" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="296" cy="240" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="314" cy="233" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="332" cy="238" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="350" cy="234" r="4" fill="#ddd" opacity="0.5"/>
+  <circle cx="368" cy="237" r="4" fill="#ddd" opacity="0.5"/>
+
+  <!-- Level 1 (coarser) -->
+  <circle cx="272" cy="260" r="5" fill="#aaa" opacity="0.6"/>
+  <circle cx="300" cy="257" r="5" fill="#aaa" opacity="0.6"/>
+  <circle cx="330" cy="261" r="5" fill="#aaa" opacity="0.6"/>
+  <circle cx="358" cy="258" r="5" fill="#aaa" opacity="0.6"/>
+
+  <!-- Level 2 (coarsest) -->
+  <circle cx="293" cy="285" r="6" fill="#e74c3c" opacity="0.8" filter="url(#glow)"/>
+  <circle cx="337" cy="285" r="6" fill="#3498db" opacity="0.8" filter="url(#glow)"/>
+
+  <!-- Coarsen arrows -->
+  <path d="M260,243 L290,280" fill="none" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
+  <path d="M370,243 L340,280" fill="none" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
+
+  <!-- Arrows to partition blocks -->
+  <path d="M390,260 Q440,260 470,180" fill="none" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="5,4" stroke-opacity="0.5"/>
+  <path d="M390,260 Q440,260 470,310" fill="none" stroke="#3498db" stroke-width="1.5" stroke-dasharray="5,4" stroke-opacity="0.5"/>
+  <path d="M390,260 Q440,260 470,440" fill="none" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="5,4" stroke-opacity="0.5"/>
+
+  <!-- Partition block 1 (red) -->
+  <rect x="475" y="140" width="160" height="80" rx="8" fill="#e74c3c" fill-opacity="0.06" stroke="#e74c3c" stroke-opacity="0.2" stroke-width="1.5"/>
+  <circle cx="505" cy="180" r="8" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="535" cy="170" r="8" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="565" cy="182" r="8" fill="#e74c3c" filter="url(#glow)"/>
+  <circle cx="600" cy="175" r="8" fill="#e74c3c" filter="url(#glow)"/>
+  <path d="M505,180 Q520,165 535,170" fill="none" stroke="#e74c3c" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M535,170 Q550,170 565,182" fill="none" stroke="#e74c3c" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M565,182 Q582,170 600,175" fill="none" stroke="#e74c3c" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <!-- Partition block 2 (blue) -->
+  <rect x="475" y="270" width="160" height="80" rx="8" fill="#3498db" fill-opacity="0.06" stroke="#3498db" stroke-opacity="0.2" stroke-width="1.5"/>
+  <circle cx="505" cy="312" r="8" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="535" cy="300" r="8" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="565" cy="314" r="8" fill="#3498db" filter="url(#glow)"/>
+  <circle cx="600" cy="306" r="8" fill="#3498db" filter="url(#glow)"/>
+  <path d="M505,312 Q520,295 535,300" fill="none" stroke="#3498db" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M535,300 Q550,302 565,314" fill="none" stroke="#3498db" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M565,314 Q582,300 600,306" fill="none" stroke="#3498db" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <!-- Partition block 3 (green) -->
+  <rect x="475" y="400" width="160" height="80" rx="8" fill="#2ecc71" fill-opacity="0.06" stroke="#2ecc71" stroke-opacity="0.2" stroke-width="1.5"/>
+  <circle cx="505" cy="442" r="8" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="535" cy="430" r="8" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="565" cy="444" r="8" fill="#2ecc71" filter="url(#glow)"/>
+  <circle cx="600" cy="436" r="8" fill="#2ecc71" filter="url(#glow)"/>
+  <path d="M505,442 Q520,425 535,430" fill="none" stroke="#2ecc71" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M535,430 Q550,432 565,444" fill="none" stroke="#2ecc71" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M565,444 Q582,430 600,436" fill="none" stroke="#2ecc71" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <text x="555" y="135" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#666">k blocks</text>
+
+  <!-- === Text (right side) === -->
+
+  <!-- Title -->
+  <text x="720" y="220" font-family="'DejaVu Sans', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="76" font-weight="700">
+    <tspan fill="#00bcd4">Hei</tspan><tspan fill="#e0e0e0">Stream</tspan>
+  </text>
+
+  <!-- Separator -->
+  <line x1="720" y1="245" x2="1220" y2="245" stroke="#334155" stroke-width="2"/>
+
+  <!-- Subtitle -->
+  <text x="720" y="285" font-family="'DejaVu Sans', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="26" fill="#aaaaaa">
+    Buffered Streaming Graph Partitioning
+  </text>
+
+  <!-- Tagline -->
+  <text x="720" y="340" font-family="'DejaVu Sans', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" fill="#777777">
+    Node and edge partitioning of graphs
+  </text>
+  <text x="720" y="368" font-family="'DejaVu Sans', 'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" fill="#777777">
+    too large for main memory
+  </text>
+
+  <!-- Badge: Part of KaHIP -->
+  <rect x="720" y="410" width="150" height="30" rx="15" fill="#5a7a5a" fill-opacity="0.35" stroke="#5a7a5a" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="795" y="430" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#8faa8f">Part of KaHIP</text>
+
+  <!-- Legend -->
+  <rect x="720" y="500" width="12" height="12" rx="2" fill="#f39c12" opacity="0.6"/>
+  <text x="740" y="511" font-family="'DejaVu Sans', sans-serif" font-size="15" fill="#888">buffer</text>
+
+  <rect x="810" y="500" width="12" height="12" rx="2" fill="#00bcd4" opacity="0.6"/>
+  <text x="830" y="511" font-family="'DejaVu Sans', sans-serif" font-size="15" fill="#888">multilevel</text>
+
+  <circle cx="946" cy="506" r="6" fill="#e74c3c" opacity="0.8"/>
+  <text x="960" y="511" font-family="'DejaVu Sans', sans-serif" font-size="15" fill="#888">block 1</text>
+
+  <circle cx="1046" cy="506" r="6" fill="#3498db" opacity="0.8"/>
+  <text x="1060" y="511" font-family="'DejaVu Sans', sans-serif" font-size="15" fill="#888">block 2</text>
+
+  <circle cx="1146" cy="506" r="6" fill="#2ecc71" opacity="0.8"/>
+  <text x="1160" y="511" font-family="'DejaVu Sans', sans-serif" font-size="15" fill="#888">block 3</text>
+
+  <!-- Bottom tagline -->
+  <text x="315" y="590" text-anchor="middle" font-family="'DejaVu Sans', sans-serif" font-size="14" fill="#555">
+    buffered streaming multilevel graph partitioning
+  </text>
+</svg>
