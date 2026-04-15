@@ -21,6 +21,8 @@ HeiStream 2.00
 
 **HeiStream** is a buffered streaming algorithm for graph partitioning and edge partitioning of massive graphs using little memory, combining multilevel methods with a streaming computational model. Part of the [KaHIP](https://github.com/KaHIP) organization.
 
+> **Python Interface:** An easy-to-use Python interface for this software is available in [CHSZLabLib](https://github.com/CHSZLab/CHSZLabLib).
+
 | | |
 |:--|:--|
 | **What it solves** | Node and edge partitioning of graphs too large for main memory |
